@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DaDoIS.Models", "DaDoIS.Models\DaDoIS.Models.csproj", "{8397FCAA-BF98-478A-A8D5-D77C59488AEB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DaDoIS.Persistence", "DaDoIS.Persistence\DaDoIS.Persistence.csproj", "{26203CCA-9ACA-4745-9526-CCCCEF94FC0E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8397FCAA-BF98-478A-A8D5-D77C59488AEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8397FCAA-BF98-478A-A8D5-D77C59488AEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8397FCAA-BF98-478A-A8D5-D77C59488AEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8397FCAA-BF98-478A-A8D5-D77C59488AEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26203CCA-9ACA-4745-9526-CCCCEF94FC0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26203CCA-9ACA-4745-9526-CCCCEF94FC0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26203CCA-9ACA-4745-9526-CCCCEF94FC0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26203CCA-9ACA-4745-9526-CCCCEF94FC0E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
