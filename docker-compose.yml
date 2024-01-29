@@ -2,10 +2,11 @@ networks:
   backend:
 
 services:
-  web:
+  api:
+    container_name: api
     image: backend
     build:
-      context: ./Backend/DaDoIS.Web/
+      context: ./Backend/DaDoIS.Api/
       dockerfile: Dockerfile
     ports: 
       - "5002:8080"
@@ -15,7 +16,7 @@ services:
       - database
 
   database:
-    container_name: MsSql
+    container_name: mssql
     image: mcr.microsoft.com/mssql/server:latest
     environment:
       - ACCEPT_EULA=Y

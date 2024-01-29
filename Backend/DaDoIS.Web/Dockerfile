@@ -7,16 +7,16 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY DaDoIS.Web.csproj .
-RUN dotnet restore "DaDoIS.Web.csproj"
+COPY DaDoIS.Api.csproj .
+RUN dotnet restore "DaDoIS.Api.csproj"
 COPY . .
-RUN dotnet build "DaDoIS.Web.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "DaDoIS.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "DaDoIS.Web.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "DaDoIS.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "DaDoIS.Web.dll"]
+ENTRYPOINT ["dotnet", "DaDoIS.Api.dll"]
