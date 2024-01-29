@@ -1,4 +1,4 @@
-﻿namespace DaDoIS.Models;
+﻿namespace DaDoIS.Data.Models;
 
 public enum MaritalStatus
 {

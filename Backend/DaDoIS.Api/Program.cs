@@ -1,8 +1,16 @@
+using DaDoIS.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Logging.AddConsole();
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseSqlServer(connectionString);
+});
 
 var app = builder.Build();
 
@@ -25,5 +33,7 @@ app.MapGet("/{id:int}",
             message = "Hello world!"
         });
     });
+
+await app.Services.GetRequiredService<AppDbContext>().Database.MigrateAsync();
 
 app.Run();

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DaDoIS.Models;
+namespace DaDoIS.Data.Models;
 
 public class Client
 {
@@ -75,8 +76,8 @@ public class Client
 
     public bool IsRetired { get; init; }
 
-    [DataType(DataType.Currency)]
-    public decimal? Salary { get; init; }
+    [Column(TypeName = "money")]
+    public double? Salary { get; init; }
 
     public bool IsLiableForMilitaryService { get; init; }
 }
