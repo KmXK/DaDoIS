@@ -1,0 +1,31 @@
+networks:
+  backend:
+
+services:
+  web:
+    image: backend
+    build:
+      context: ./Backend/DaDoIS.Web/
+      dockerfile: Dockerfile
+    ports: 
+      - "5002:8080"
+    networks:
+      - backend
+    depends_on:
+      - database
+
+  database:
+    container_name: MsSql
+    image: mcr.microsoft.com/mssql/server:latest
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=12345678Sa
+    ports:
+      - "5001:1433"
+    volumes:
+      - db-data:/var/opt/mssql
+    networks:
+      - backend
+
+volumes:
+  db-data:
