@@ -11,9 +11,8 @@ secrets:
 services:
   api:
     container_name: api
-    image: backend
     build:
-      context: ./Backend/DaDoIS.Api/
+      context: ./Backend/
       dockerfile: Dockerfile
     ports: 
       - "5002:8080"

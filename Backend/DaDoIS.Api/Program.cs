@@ -10,13 +10,18 @@ builder.Logging.AddConsole();
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(connectionString);
+    options.LogTo(Console.WriteLine, LogLevel.Debug);
 });
+
+Console.WriteLine(connectionString);
 
 var app = builder.Build();
 
+app.Services.GetRequiredService<AppDbContext>().Database.Migrate();
+
 app.UseHttpsRedirection();
 
-app.MapGet("/", () => "Hello world!");
+app.MapGet("/", () => connectionString);
 
 app.MapGet("/{id:int}",
     (
@@ -33,7 +38,5 @@ app.MapGet("/{id:int}",
             message = "Hello world!"
         });
     });
-
-await app.Services.GetRequiredService<AppDbContext>().Database.MigrateAsync();
 
 app.Run();
