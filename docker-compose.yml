@@ -1,6 +1,13 @@
 networks:
   backend:
 
+volumes:
+  db-data:
+
+secrets:
+  db_password:
+    file: ./db_password.txt
+
 services:
   api:
     container_name: api
@@ -19,14 +26,13 @@ services:
     container_name: mssql
     image: mcr.microsoft.com/mssql/server:latest
     environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=12345678Sa
+      ACCEPT_EULA: Y
+      MSSQL_SA_PASSWORD_FILE: /run/secrets/db_password
+    secrets:
+      - db_password
     ports:
       - "5001:1433"
     volumes:
       - db-data:/var/opt/mssql
     networks:
       - backend
-
-volumes:
-  db-data:
