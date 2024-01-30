@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace DaDoIS.Data.Models;
+namespace DaDoIS.Data.Entities;
 
 public class Client
 {
@@ -34,9 +34,9 @@ public class Client
     public required string IdentificationNumber { get; init; }
 
     public required string BirthPlace { get; init; }
-    
+
     public required City LivingCity { get; init; }
-    
+
     public required int LivingCityId { get; init; }
 
     public required string LivingAddress { get; init; }
@@ -55,7 +55,7 @@ public class Client
     public string? Position { get; init; }
 
     public required City RegistrationCity { get; init; }
-    
+
     public required int RegistrationCityId { get; init; }
 
     public required string RegistrationAddress { get; init; }
@@ -63,7 +63,7 @@ public class Client
     public MaritalStatus MaritalStatus { get; init; }
 
     public required Citizenship Citizenship { get; init; }
-    
+
     public required int CitizenshipId { get; init; }
 
     public DisabilityGroup DisabilityGroup { get; init; }

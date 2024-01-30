@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace DaDoIS.Data.Models;
+﻿namespace DaDoIS.Data.Entities;
 
 public class Citizenship
 {

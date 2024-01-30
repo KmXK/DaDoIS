@@ -17,7 +17,17 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
-app.MapGet("/", () => connectionString);
+app.MapGet("/clients", (AppDbContext db) => db.Clients);
+
+app.MapGet("/clients/{id:Guid}", (AppDbContext db, Guid id) => db.Clients.FirstOrDefault(c => c.Id == id));
+
+app.MapGet("/cities", (AppDbContext db) => db.Cities);
+
+app.MapGet("/cities/{id:int}", (AppDbContext db, int id) => db.Cities.FirstOrDefault(c => c.Id == id));
+
+app.MapGet("/citizenship", (AppDbContext db) => db.Citizenship);
+
+app.MapGet("/citizenship/{id:int}", (AppDbContext db, int id) => db.Citizenship.FirstOrDefault(c => c.Id == id));
 
 app.MapGet("/{id:int}", (
     int id,

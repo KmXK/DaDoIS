@@ -1,4 +1,4 @@
-﻿namespace DaDoIS.Data.Models;
+﻿namespace DaDoIS.Data.Entities;
 
 public enum GenderType
 {

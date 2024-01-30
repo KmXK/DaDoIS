@@ -1,4 +1,4 @@
-﻿using DaDoIS.Data.Models;
+﻿using DaDoIS.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,12 +12,12 @@ public class ClientConfiguration : IEntityTypeConfiguration<Client>
             .HasOne(x => x.LivingCity)
             .WithMany()
             .OnDelete(DeleteBehavior.NoAction);
-        
+
         builder
             .HasOne(x => x.RegistrationCity)
             .WithMany()
             .OnDelete(DeleteBehavior.NoAction);
-        
+
         builder
             .HasOne(x => x.Citizenship)
             .WithMany()

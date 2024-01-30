@@ -1,5 +1,5 @@
 ﻿using DaDoIS.Data.Configurations;
-using DaDoIS.Data.Models;
+using DaDoIS.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace DaDoIS.Data;
