@@ -1,50 +1,44 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace DaDoIS.Data.Models;
 
 public class Client
 {
-    [Key]
     public Guid Id { get; init; }
 
-    [Required(ErrorMessage = "First Name is required.")]
     public required string FirstName { get; init; }
 
-    [Required]
     public required string LastName { get; init; }
 
-    [Required]
     public required string Patronymic { get; init; }
 
     public DateTime BirthDate { get; init; }
 
     public GenderType Gender { get; init; }
 
-    [Required]
-    [StringLength(2, MinimumLength = 2, ErrorMessage = "Passport series must be 2 characters long.")]
+    [Unicode(false)]
+    [StringLength(2, MinimumLength = 2)]
     public required string PassportSeries { get; init; }
 
-    [Required]
-    [StringLength(7, MinimumLength = 7, ErrorMessage = "Passport number must be 7 characters long.")]
+    [Unicode(false)]
+    [StringLength(7, MinimumLength = 7)]
     public required string PassportNumber { get; init; }
 
-    [Required]
     public required string PassportIssuer { get; init; }
 
-    [Required]
     public DateTime PassportIssueDate { get; init; }
 
-    [Required]
+    [Unicode(false)]
     public required string IdentificationNumber { get; init; }
 
-    [Required]
     public required string BirthPlace { get; init; }
-
-    [Required]
+    
     public required City LivingCity { get; init; }
+    
+    public required int LivingCityId { get; init; }
 
-    [Required]
     public required string LivingAddress { get; init; }
 
     [Phone]
@@ -60,17 +54,17 @@ public class Client
 
     public string? Position { get; init; }
 
-    [Required]
     public required City RegistrationCity { get; init; }
+    
+    public required int RegistrationCityId { get; init; }
 
-    [Required]
     public required string RegistrationAddress { get; init; }
 
-    [Required]
     public MaritalStatus MaritalStatus { get; init; }
 
-    [Required]
     public required Citizenship Citizenship { get; init; }
+    
+    public required int CitizenshipId { get; init; }
 
     public DisabilityGroup DisabilityGroup { get; init; }
 

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DaDoIS.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class models : Migration
+    public partial class AddedModels : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -47,11 +47,11 @@ namespace DaDoIS.Data.Migrations
                     Patronymic = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     BirthDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Gender = table.Column<int>(type: "int", nullable: false),
-                    PassportSeries = table.Column<string>(type: "nvarchar(2)", maxLength: 2, nullable: false),
-                    PassportNumber = table.Column<string>(type: "nvarchar(7)", maxLength: 7, nullable: false),
+                    PassportSeries = table.Column<string>(type: "varchar(2)", unicode: false, maxLength: 2, nullable: false),
+                    PassportNumber = table.Column<string>(type: "varchar(7)", unicode: false, maxLength: 7, nullable: false),
                     PassportIssuer = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PassportIssueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IdentificationNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IdentificationNumber = table.Column<string>(type: "varchar(max)", unicode: false, nullable: false),
                     BirthPlace = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LivingCityId = table.Column<int>(type: "int", nullable: false),
                     LivingAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -76,14 +76,12 @@ namespace DaDoIS.Data.Migrations
                         name: "FK_Clients_Cities_LivingCityId",
                         column: x => x.LivingCityId,
                         principalTable: "Cities",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Clients_Cities_RegistrationCityId",
                         column: x => x.RegistrationCityId,
                         principalTable: "Cities",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Clients_Citizenship_CitizenshipId",
                         column: x => x.CitizenshipId,

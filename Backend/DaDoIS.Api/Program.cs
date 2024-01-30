@@ -13,30 +13,27 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.LogTo(Console.WriteLine, LogLevel.Debug);
 });
 
-Console.WriteLine(connectionString);
-
 var app = builder.Build();
-
-app.Services.GetRequiredService<AppDbContext>().Database.Migrate();
 
 app.UseHttpsRedirection();
 
 app.MapGet("/", () => connectionString);
 
-app.MapGet("/{id:int}",
-    (
-        int id,
-        [FromServices] ILogger<Program> logger) =>
+app.MapGet("/{id:int}", (
+    int id,
+    [FromServices] ILogger<Program> logger) =>
+{
+    logger.LogInformation("My new value Id = {id}.", id);
+    return TypedResults.Ok(new
     {
-        logger.LogInformation("My new value Id = {id}.", id);
-        return TypedResults.Ok(new
+        data = new[]
         {
-            data = new[]
-            {
-                1, 2, 3, 4
-            },
-            message = "Hello world!"
-        });
+            1, 2, 3, 4
+        },
+        message = "Hello world!"
     });
+});
+
+await app.Services.GetRequiredService<AppDbContext>().Database.MigrateAsync();
 
 app.Run();

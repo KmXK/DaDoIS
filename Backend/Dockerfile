@@ -1,13 +1,9 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS base
-USER root
-RUN apk add --no-cache icu-libs
-ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 USER $APP_UID
 WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
+EXPOSE 5002
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY *.sln .
@@ -15,7 +11,7 @@ COPY */*.csproj ./
 RUN for file in $(ls *.csproj); do mkdir -p ${file%.*} && mv $file ${file%.*}; done
 RUN dotnet restore
 COPY . . 
-RUN dotnet build "DaDoIS.Api" -c $BUILD_CONFIGURATION -o /app/build
+# RUN dotnet build "DaDoIS.Api" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release

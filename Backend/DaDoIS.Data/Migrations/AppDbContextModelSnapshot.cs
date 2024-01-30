@@ -90,7 +90,8 @@ namespace DaDoIS.Data.Migrations
 
                     b.Property<string>("IdentificationNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)");
 
                     b.Property<bool>("IsLiableForMilitaryService")
                         .HasColumnType("bit");
@@ -122,12 +123,14 @@ namespace DaDoIS.Data.Migrations
                     b.Property<string>("PassportNumber")
                         .IsRequired()
                         .HasMaxLength(7)
-                        .HasColumnType("nvarchar(7)");
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(7)");
 
                     b.Property<string>("PassportSeries")
                         .IsRequired()
                         .HasMaxLength(2)
-                        .HasColumnType("nvarchar(2)");
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(2)");
 
                     b.Property<string>("Patronymic")
                         .IsRequired()
@@ -174,13 +177,13 @@ namespace DaDoIS.Data.Migrations
                     b.HasOne("DaDoIS.Data.Models.City", "LivingCity")
                         .WithMany()
                         .HasForeignKey("LivingCityId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("DaDoIS.Data.Models.City", "RegistrationCity")
                         .WithMany()
                         .HasForeignKey("RegistrationCityId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Citizenship");
