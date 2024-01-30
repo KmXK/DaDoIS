@@ -1,12 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace DaDoIS.Models;
+﻿namespace DaDoIS.Data.Entities;
 
 public class Citizenship
 {
-    [Key]
     public int Id { get; init; }
-    
-    [Required]
+
     public required string Name { get; init; }
 }

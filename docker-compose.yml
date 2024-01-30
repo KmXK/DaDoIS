@@ -1,31 +1,43 @@
-networks:
-  backend:
-
 services:
-  web:
-    image: backend
+  api:
+    container_name: api
     build:
-      context: ./Backend/DaDoIS.Web/
+      context: ./Backend/
       dockerfile: Dockerfile
     ports: 
       - "5002:8080"
     networks:
       - backend
     depends_on:
-      - database
+      mssql:
+        condition: service_healthy
 
-  database:
-    container_name: MsSql
+  mssql:
+    container_name: mssql
     image: mcr.microsoft.com/mssql/server:latest
     environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=12345678Sa
+      ACCEPT_EULA: Y
+      MSSQL_SA_PASSWORD_FILE: /run/secrets/db_password
+    secrets:
+      - db_password
     ports:
       - "5001:1433"
     volumes:
       - db-data:/var/opt/mssql
     networks:
       - backend
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -U sa -P $(tr -d '\r' < /run/secrets/db_password) -H localhost -Q "select 1" -b -o /dev/null
+      interval: 5s
+      timeout: 2s
+      retries: 10
+
+networks:
+  backend:
 
 volumes:
   db-data:
+
+secrets:
+  db_password:
+    file: ./db_password.txt
