@@ -22,9 +22,15 @@ namespace DaDoIS.Api.Controllers
         /// </summary>
         /// <returns>Список клиентов</returns>
         [HttpGet]
-        public ActionResult<IEnumerable<ClientDto>> GetAllClients()
+        public async Task<ActionResult<IEnumerable<ClientDto>>> GetAllClients()
         {
-            return Ok(db.Clients.Select(c => mapper.Map<ClientDto>(c)));
+            var clients = await db.Clients
+                .Include(x => x.Citizenship)
+                .Include(x => x.LivingCity)
+                .Include(x => x.RegistrationCity)
+                .ToListAsync();
+            
+            return Ok(mapper.Map<List<ClientDto>>(clients));
         }
 
         /// <summary>
@@ -33,10 +39,17 @@ namespace DaDoIS.Api.Controllers
         /// <param name="id"></param>
         /// <returns>Клиент</returns>
         [HttpGet("{id:guid}")]
-        public ActionResult<ClientDto> GetClientById(Guid id)
+        public async Task<ActionResult<ClientDto>> GetClientById(Guid id)
         {
-            if (!db.Clients.Any(c => c.Id == id)) return NotFound();
-            return Ok(mapper.Map<ClientDto>(db.Clients.Find(id)));
+            var client = await db.Clients
+                .Include(x => x.Citizenship)
+                .Include(x => x.LivingCity)
+                .Include(x => x.RegistrationCity)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (client == null) return NotFound();
+            
+            return Ok(mapper.Map<ClientDto>(client));
         }
 
         /// <summary>

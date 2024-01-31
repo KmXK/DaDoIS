@@ -1,4 +1,4 @@
-export interface City {
+export interface Citizenship {
     id: number;
     name: string;
 }

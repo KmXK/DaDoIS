@@ -1,5 +1,6 @@
-import { City } from "./city.model";
-import { Gender } from "./gender.model";
+import { Gender } from '../enums/gender.enum';
+import { Citizenship } from './citizenship.model';
+import { City } from './city.model';
 
 export interface Client {
     id: string;
@@ -11,21 +12,21 @@ export interface Client {
     passportSeries: string;
     passportNumber: string;
     passportIssueDate: Date;
-    passportIssuedBy: string;
-    passportIdentificationNumber: string;
+    passportIssuer: string;
+    identificationNumber: string;
     birthPlace: string;
-    cityOfResidence: City;
-    addressOfResidence: string;
-    homePhone: string | null;
-    mobilePhone: string | null;
+    livingCity: City;
+    livingAddress: string;
+    homePhoneNumber: string | null;
+    phoneNumber: string | null;
     email: string | null;
-    placeOfWork: string | null;
+    workPlace: string | null;
     position: string | null;
     registrationCity: City;
     registrationAddress: string;
-    maritalStatusId: number;
-    citizenshipId: number;
-    disabilityTypeId: number;
+    maritalStatus: number;
+    citizenship: Citizenship;
+    disabilityGroup: number;
     isRetired: boolean;
     salary: number | null;
     isLiableForMilitaryService: boolean;

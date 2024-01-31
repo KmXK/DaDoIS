@@ -1,0 +1,20 @@
+.container {
+    padding: 10px;
+
+    .mat-mdc-table {
+        border-radius: 8px;
+        overflow: hidden !important;
+    }
+
+    .mat-mdc-row {
+        transition: background-color .3s;
+
+        &:hover {
+            background-color: aliceblue;
+            cursor: pointer;
+            /*transform: translate(10px, 10px);*/
+
+            transition: background-color .3s;
+        }
+    }
+}

@@ -1,7 +1,27 @@
-<ul>
-    @for (client of clients | async; track client.id) {
-    <li>{{ client.firstName }} {{ client.lastName }}</li>
+<div class="container">
+    <h2>Клиенты</h2>
 
-    Passport: {{ client.passportNumber }}
-    }
-</ul>
+    <table [dataSource]="clients" mat-table matSort>
+        <ng-container matColumnDef="lastName">
+            <th *matHeaderCellDef mat-header-cell mat-sort-header>Фамилия</th>
+            <td *matCellDef="let element" mat-cell>{{ element.lastName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="firstName">
+            <th *matHeaderCellDef mat-header-cell mat-sort-header>Имя</th>
+            <td *matCellDef="let element" mat-cell>{{ element.firstName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="patronymic">
+            <th *matHeaderCellDef mat-header-cell mat-sort-header>Отчество</th>
+            <td *matCellDef="let element" mat-cell>{{ element.patronymic }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+            mat-row
+            *matRowDef="let client; columns: displayedColumns"
+            (click)="clientClick(client)"
+        ></tr>
+    </table>
+</div>

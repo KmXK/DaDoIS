@@ -1,7 +1,7 @@
-import { Injectable, inject } from '@angular/core';
-import { ApiService } from './api.service';
+import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Client } from '../model/client.model';
+import { Client } from '../models/client.model';
+import { ApiService } from './api.service';
 
 @Injectable({
     providedIn: 'root'
@@ -13,10 +13,8 @@ export class ClientService {
     public clients = this._clients.asObservable();
 
     public updateClients(): void {
-        this.apiService
-            .get<Client[]>('/api/clients')
-            .subscribe(clients => {
-                this._clients.next(clients);
-            })
+        this.apiService.get<Client[]>('/api/clients').subscribe(clients => {
+            this._clients.next(clients);
+        });
     }
 }

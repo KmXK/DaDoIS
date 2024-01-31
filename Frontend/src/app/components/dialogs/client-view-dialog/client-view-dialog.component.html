@@ -1,0 +1,18 @@
+<h1 mat-dialog-title>{{ client.firstName }} {{ client.lastName }}</h1>
+<div mat-dialog-content>
+    @for (clientData of clientsData; track clientData[0]) {
+        @if (clientData[1]) {
+            <div class="field">
+                <span class="field-name">
+                    {{ clientData[0] }}
+                </span>
+                <span class="field-value">
+                    {{ clientData[1] }}
+                </span>
+            </div>
+        }
+    }
+</div>
+<div mat-dialog-actions class="buttons-container">
+    <button mat-button (click)="close()">Закрыть</button>
+</div>

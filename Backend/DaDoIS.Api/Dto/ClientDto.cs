@@ -73,6 +73,11 @@ public record ClientDto
     public required int LivingCityId { get; set; }
 
     /// <summary>
+    /// Город фактического проживания
+    /// </summary>
+    public required City LivingCity { get; set; }
+
+    /// <summary>
     /// Адрес фактического проживания
     /// </summary>
     public required string LivingAddress { get; set; }
@@ -108,6 +113,11 @@ public record ClientDto
     public required int RegistrationCityId { get; set; }
 
     /// <summary>
+    /// Город прописки
+    /// </summary>
+    public required City RegistrationCity { get; set; }
+
+    /// <summary>
     /// Адрес прописки
     /// </summary>
     public required string RegistrationAddress { get; set; }
@@ -121,6 +131,11 @@ public record ClientDto
     /// Id гражданство
     /// </summary>
     public required int CitizenshipId { get; set; }
+
+    /// <summary>
+    /// Гражданство
+    /// </summary>
+    public required Citizenship Citizenship { get; set; }
 
     /// <summary>
     /// Инвалидность
