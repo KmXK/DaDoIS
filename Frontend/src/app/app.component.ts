@@ -12,7 +12,7 @@ import { ClientListComponent } from './components/client-list/client-list.compon
 export class AppComponent implements OnInit {
     private readonly clientService = inject(ClientService);
 
-    ngOnInit(): void {
+    public ngOnInit(): void {
         this.clientService.updateClients();
     }
 }

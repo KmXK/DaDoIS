@@ -1,0 +1,17 @@
+{
+    "endOfLine": "auto",
+    "tabWidth": 4,
+    "semi": true,
+    "useTabs": false,
+    "singleQuote": true,
+    "trailingComma": "none",
+    "arrowParens": "avoid",
+    "overrides": [
+        {
+            "files": "*.html",
+            "options": {
+                "parser": "angular"
+            }
+        }
+    ]
+}
