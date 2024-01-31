@@ -1,6 +1,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/dotnetcore,rider,jetbrains,angular,node
 # Edit at https://www.toptal.com/developers/gitignore?templates=dotnetcore,rider,jetbrains,angular,node
 
+db_password.txt
+.vscode
+
 ### Angular ###
 ## Angular ##
 # compiled output
