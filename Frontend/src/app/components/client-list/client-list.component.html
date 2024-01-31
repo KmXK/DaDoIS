@@ -1,0 +1,7 @@
+<ul>
+    @for (client of clients | async; track client.id) {
+    <li>{{ client.firstName }} {{ client.lastName }}</li>
+
+    Passport: {{ client.passportNumber }}
+    }
+</ul>
