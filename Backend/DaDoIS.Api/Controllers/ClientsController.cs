@@ -3,6 +3,7 @@ using DaDoIS.Data;
 using DaDoIS.Data.Entities;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DaDoIS.Api.Controllers
 {
@@ -48,12 +49,33 @@ namespace DaDoIS.Api.Controllers
         {
             var result = await validator.ValidateAsync(clientDto);
             if (result.IsValid)
+                return BadRequest(result.Errors);
+            var client = db.Clients.Add(mapper.Map<Client>(clientDto));
+            db.SaveChanges();
+            return Ok(client.Entity);
+        }
+
+        /// <summary>
+        /// Метод для обновления клиента
+        /// </summary>
+        /// <param name="clientDto"></param>
+        /// <returns></returns>
+        [HttpPut]
+        public async Task<ActionResult> UpdateClient([FromBody] ClientDto clientDto)
+        {
+            var id = clientDto.Id;
+            if (db.Clients.Find(id) != null)
             {
-                var client = db.Clients.Add(mapper.Map<Client>(clientDto));
+                var createClientDto = mapper.Map<CreateClientDto>(clientDto);
+                var validationResult = await validator.ValidateAsync(createClientDto);
+                if (!validationResult.IsValid)
+                    return BadRequest(validationResult.Errors);
+
+                var client = db.Clients.Update(mapper.Map<Client>(clientDto));
                 db.SaveChanges();
-                return Ok(client);
-            };
-            return BadRequest(result.Errors);
+                return Ok(mapper.Map<ClientDto>(client.Entity));
+            }
+            return NotFound();
         }
 
         /// <summary>

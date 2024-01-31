@@ -48,12 +48,10 @@ namespace DaDoIS.Api.Controllers
         {
             var result = await validator.ValidateAsync(citizenshipDto);
             if (result.IsValid)
-            {
-                var citizenship = db.Citizenship.Add(mapper.Map<Citizenship>(citizenshipDto));
-                db.SaveChanges();
-                return Ok(citizenship);
-            };
-            return BadRequest(result.Errors);
+                return BadRequest(result.Errors);
+            var citizenship = db.Citizenship.Add(mapper.Map<Citizenship>(citizenshipDto));
+            db.SaveChanges();
+            return Ok(citizenship.Entity);
         }
 
         /// <summary>

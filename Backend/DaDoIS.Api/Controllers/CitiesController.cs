@@ -1,3 +1,4 @@
+using System.Data.Common;
 using AutoMapper;
 using DaDoIS.Data;
 using DaDoIS.Data.Entities;
@@ -47,13 +48,11 @@ namespace DaDoIS.Api.Controllers
         public async Task<ActionResult<CityDto>> CreateCity([FromBody] CreateCityDto cityDto)
         {
             var result = await validator.ValidateAsync(cityDto);
-            if (result.IsValid)
-            {
-                var city = db.Cities.Add(mapper.Map<City>(cityDto));
-                db.SaveChanges();
-                return Ok(mapper.Map<CityDto>(city));
-            };
-            return BadRequest(result.Errors);
+            if (!result.IsValid)
+                return BadRequest(result.Errors);
+            var city = db.Cities.Add(mapper.Map<City>(cityDto));
+            db.SaveChanges();
+            return Ok(mapper.Map<CityDto>(city.Entity));
         }
 
         /// <summary>

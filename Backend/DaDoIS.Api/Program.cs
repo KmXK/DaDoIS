@@ -1,3 +1,4 @@
+using DaDoIS.Api.Services;
 using DaDoIS.Api.Validators;
 using DaDoIS.Data;
 using FluentValidation;
@@ -21,6 +22,7 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddValidatorsFromAssemblyContaining<CreateClientDtoValidator>();
+builder.Services.AddTransient<DataSeedService>();
 
 var app = builder.Build();
 
@@ -29,6 +31,11 @@ app.MapControllers();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-await app.Services.GetRequiredService<AppDbContext>().Database.MigrateAsync();
+using var scope = app.Services.CreateScope();
+scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.Migrate();
+if (app.Environment.IsDevelopment())
+{
+    scope.ServiceProvider.GetRequiredService<DataSeedService>().Seed();
+}
 
 app.Run();
