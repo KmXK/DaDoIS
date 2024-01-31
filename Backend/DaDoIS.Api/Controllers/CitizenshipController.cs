@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using DaDoIS.Data;
 using DaDoIS.Data.Entities;
@@ -10,25 +6,45 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DaDoIS.Api.Controllers
 {
+    /// <summary>
+    /// Контролер для гражданства
+    /// </summary>
+    /// <param name="db"></param>
+    /// <param name="mapper"></param>
+    /// <param name="validator"></param>
     [ApiController]
     [Route("api/[controller]")]
     public class CitizenshipController(AppDbContext db, IMapper mapper, IValidator<CreateCitizenshipDto> validator) : ControllerBase
     {
+        /// <summary>
+        /// Метод для получения всех гражданств
+        /// </summary>
+        /// <returns>Список гражданств</returns>
         [HttpGet]
-        public IActionResult GetAllCitizenship()
+        public ActionResult<IEnumerable<CitizenshipDto>> GetAllCitizenship()
         {
             return Ok(db.Citizenship.Select(c => mapper.Map<CitizenshipDto>(c)));
         }
 
+        /// <summary>
+        /// Метод для получения гражданства по идентификатору
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Гражданство</returns>
         [HttpGet("{id:int}")]
-        public IActionResult GetCitizenshipById(int id)
+        public ActionResult<CitizenshipDto> GetCitizenshipById(int id)
         {
             if (!db.Citizenship.Any(c => c.Id == id)) return NotFound();
             return Ok(mapper.Map<CitizenshipDto>(db.Citizenship.Find(id)));
         }
 
+        /// <summary>
+        /// Метод для создания гражданства
+        /// </summary>
+        /// <param name="citizenshipDto"></param>
+        /// <returns>Новое гражданство</returns>
         [HttpPost]
-        public async Task<IActionResult> CreateCitizenship([FromBody] CreateCitizenshipDto citizenshipDto)
+        public async Task<ActionResult<CitizenshipDto>> CreateCitizenship([FromBody] CreateCitizenshipDto citizenshipDto)
         {
             var result = await validator.ValidateAsync(citizenshipDto);
             if (result.IsValid)
@@ -40,8 +56,13 @@ namespace DaDoIS.Api.Controllers
             return BadRequest(result.Errors);
         }
 
+        /// <summary>
+        /// Метод для удаления гражданства
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("{id:int}")]
-        public IActionResult DeleteCitizenship(int id)
+        public ActionResult DeleteCitizenship(int id)
         {
             var citizenship = db.Citizenship.Find(id);
             if (citizenship != null)

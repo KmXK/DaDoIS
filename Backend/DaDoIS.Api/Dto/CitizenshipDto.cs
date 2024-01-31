@@ -1,17 +1,39 @@
 ﻿namespace DaDoIS.Api;
 
+/// <summary>
+/// Сущность "Гражданство"
+/// </summary>
 public record CitizenshipDto
 {
-    public int Id;
-    public required string Name;
+    /// <summary>
+    /// Идентификатор гражданства
+    /// </summary>
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Название гражданства
+    /// </summary>
+    public required string Name { get; set; }
 }
 
+/// <summary>
+/// Сущность "Создание гражданства"
+/// </summary>
 public record CreateCitizenshipDto
 {
-    public required string Name;
+    /// <summary>
+    /// Название гражданства
+    /// </summary>
+    public required string Name { get; set; }
 }
 
+/// <summary>
+/// Сущность "Удаление гражданства"
+/// </summary>
 public record DeleteCitizenshipDto
 {
-    public int Id;
+    /// <summary>
+    /// Идентификатор гражданства
+    /// </summary>
+    public int Id { get; set; }
 }

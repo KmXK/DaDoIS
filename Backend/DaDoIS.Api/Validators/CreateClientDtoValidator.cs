@@ -3,8 +3,15 @@ using FluentValidation;
 
 namespace DaDoIS.Api.Validators;
 
+/// <summary>
+/// Валидатор для сущности "Клиент"
+/// </summary>
 public class CreateClientDtoValidator : AbstractValidator<CreateClientDto>
 {
+    /// <summary>
+    /// Настройка валидатора для сущности "Клиент"
+    /// </summary>
+    /// <param name="db"></param>
     public CreateClientDtoValidator(AppDbContext db)
     {
         RuleFor(x => x.FirstName).NotEmpty().Matches("[А-Яа-я]");

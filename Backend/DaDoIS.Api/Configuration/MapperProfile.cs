@@ -1,10 +1,16 @@
 using AutoMapper;
 using DaDoIS.Data.Entities;
 
-namespace DaDoIS.Api.Properties;
+namespace DaDoIS.Api.Configuration;
 
+/// <summary>
+/// Mapping configuring class
+/// </summary>
 public class MapperProfile : Profile
 {
+    /// <summary>
+    /// Mapping configuring class constructor
+    /// </summary>
     public MapperProfile()
     {
         CreateMap<City, CityDto>();

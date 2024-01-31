@@ -1,19 +1,41 @@
 ﻿namespace DaDoIS.Api;
 
+/// <summary>
+/// Сущность "Город"
+/// </summary>
 public record CityDto
 {
-    public int Id;
-    public required string Name;
+    /// <summary>
+    /// Идентификатор города
+    /// </summary>
+    public int Id { get; init; }
+
+    /// <summary>
+    /// Название города
+    /// </summary>
+    public required string Name { get; set; }
 }
 
+/// <summary>
+/// Сущность "Создание города"
+/// </summary>
 public record CreateCityDto
 {
-    public required string Name;
+    /// <summary>
+    /// Название города
+    /// </summary>
+    public required string Name { get; set; }
 }
 
+/// <summary>
+/// Сущность "Удаление города"
+/// </summary>
 public record DeleteCityDto
 {
-    public int Id;
+    /// <summary>
+    /// Идентификатор города
+    /// </summary>
+    public int Id { get; set; }
 }
 
 
