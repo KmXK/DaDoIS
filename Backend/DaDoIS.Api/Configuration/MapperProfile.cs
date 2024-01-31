@@ -21,5 +21,6 @@ public class MapperProfile : Profile
 
         CreateMap<Client, ClientDto>();
         CreateMap<CreateClientDto, Client>();
+        CreateMap<ClientDto, CreateClientDto>();
     }
 }
