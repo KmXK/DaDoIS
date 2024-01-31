@@ -1,4 +1,6 @@
-﻿namespace DaDoIS.Api;
+﻿using DaDoIS.Data.Entities;
+
+namespace DaDoIS.Api;
 
 public record ClientDto
 {
@@ -7,7 +9,7 @@ public record ClientDto
     public required string LastName;
     public required string Patronymic;
     public DateTime BirthDate;
-    public int Gender;
+    public GenderType Gender;
     public required string PassportSeries;
     public required string PassportNumber;
     public required string PassportIssuer;
@@ -23,9 +25,9 @@ public record ClientDto
     public string? Position;
     public required int RegistrationCityId;
     public required string RegistrationAddress;
-    public int MaritalStatus;
+    public MaritalStatus MaritalStatus;
     public required int CitizenshipId;
-    public int DisabilityGroup;
+    public DisabilityGroup DisabilityGroup;
     public bool IsRetired;
     public double? Salary;
     public bool IsLiableForMilitaryService;
@@ -37,7 +39,7 @@ public record CreateClientDto
     public required string LastName;
     public required string Patronymic;
     public DateTime BirthDate;
-    public int Gender;
+    public GenderType Gender;
     public required string PassportSeries;
     public required string PassportNumber;
     public required string PassportIssuer;
@@ -53,9 +55,9 @@ public record CreateClientDto
     public string? Position;
     public required int RegistrationCityId;
     public required string RegistrationAddress;
-    public int MaritalStatus;
+    public MaritalStatus MaritalStatus;
     public required int CitizenshipId;
-    public int DisabilityGroup;
+    public DisabilityGroup DisabilityGroup;
     public bool IsRetired;
     public double? Salary;
     public bool IsLiableForMilitaryService;

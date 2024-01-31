@@ -1,5 +1,6 @@
+using DaDoIS.Api.Validators;
 using DaDoIS.Data;
-using Microsoft.AspNetCore.Mvc;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,37 +13,14 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString);
     options.LogTo(Console.WriteLine, LogLevel.Debug);
 });
+builder.Services.AddControllers();
+builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddValidatorsFromAssemblyContaining<CreateClientDtoValidator>();
 
 var app = builder.Build();
 
 app.UseHttpsRedirection();
-
-app.MapGet("/clients", (AppDbContext db) => db.Clients);
-
-app.MapGet("/clients/{id:Guid}", (AppDbContext db, Guid id) => db.Clients.FirstOrDefault(c => c.Id == id));
-
-app.MapGet("/cities", (AppDbContext db) => db.Cities);
-
-app.MapGet("/cities/{id:int}", (AppDbContext db, int id) => db.Cities.FirstOrDefault(c => c.Id == id));
-
-app.MapGet("/citizenship", (AppDbContext db) => db.Citizenship);
-
-app.MapGet("/citizenship/{id:int}", (AppDbContext db, int id) => db.Citizenship.FirstOrDefault(c => c.Id == id));
-
-app.MapGet("/{id:int}", (
-    int id,
-    [FromServices] ILogger<Program> logger) =>
-{
-    logger.LogInformation("My new value Id = {id}.", id);
-    return TypedResults.Ok(new
-    {
-        data = new[]
-        {
-            1, 2, 3, 4
-        },
-        message = "Hello world!"
-    });
-});
+app.MapControllers();
 
 await app.Services.GetRequiredService<AppDbContext>().Database.MigrateAsync();
 
