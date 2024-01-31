@@ -1,4 +1,18 @@
 services:
+  front:
+    container_name: front
+    build: ./Frontend/
+    ports:
+      - "5003:4200"
+    volumes:
+      - ./Frontend:/app
+      - /app/node_modules
+    networks:
+      - frontend
+    depends_on:
+      api:
+        condition: service_started
+
   api:
     container_name: api
     build:
@@ -8,6 +22,7 @@ services:
       - "5002:8080"
     networks:
       - backend
+      - frontend
     depends_on:
       mssql:
         condition: service_healthy
@@ -33,6 +48,7 @@ services:
       retries: 10
 
 networks:
+  frontend:
   backend:
 
 volumes:
