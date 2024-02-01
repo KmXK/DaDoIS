@@ -179,8 +179,56 @@ export class ClientCreateDialog {
                 this.form.value.isLiableForMilitaryService!
         };
 
-        this.clientService
-            .createClient(client)
-            .subscribe(() => this.dialogRef.close());
+        this.clientService.createClient(client).subscribe({
+            next: () => {
+                this.dialogRef.close();
+            },
+            error: err => {
+                this.showErrors(
+                    err.error as {
+                        propertyName: string;
+                        errorMessage: string;
+                    }[]
+                );
+                console.log(err);
+            },
+            complete: () => {
+                this.inProcess.set(false);
+            }
+        });
+    }
+
+    private showErrors(
+        errors: { propertyName: string; errorMessage: string }[]
+    ): void {
+        const controlsMap: Record<string, string> = {
+            passportSeries: 'passport',
+            passportNumber: 'passport',
+            citizenshipId: 'citizenship',
+            registrationCityId: 'registrationCity',
+            livingCityId: 'livingCity',
+            gender: 'sex'
+        };
+
+        if (Array.isArray(errors) && errors.length > 0) {
+            const formErrors: Record<string, boolean> = {};
+
+            for (const error of errors) {
+                const propertyName =
+                    error.propertyName[0].toLowerCase() +
+                    error.propertyName.slice(1);
+
+                const controlName = controlsMap[propertyName] || propertyName;
+                // @ts-ignore
+                this.form.controls[controlName]?.setErrors({
+                    serverError: true
+                });
+                formErrors[controlName] = true;
+            }
+
+            this.form.setErrors(formErrors);
+            this.form.markAllAsTouched();
+            console.log(this.form);
+        }
     }
 }

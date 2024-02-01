@@ -61,7 +61,7 @@ namespace DaDoIS.Api.Controllers
         public async Task<ActionResult<ClientDto>> CreateClient([FromBody] CreateClientDto clientDto)
         {
             var result = await validator.ValidateAsync(clientDto);
-            if (result.IsValid)
+            if (!result.IsValid)
                 return BadRequest(result.Errors);
             var client = db.Clients.Add(mapper.Map<Client>(clientDto));
             db.SaveChanges();
