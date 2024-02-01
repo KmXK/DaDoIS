@@ -175,7 +175,13 @@
         <!-- salary-->
         <mat-form-field>
             <mat-label>Ежемесячный доход</mat-label>
-            <input matInput formControlName="salary" />
+            <input
+                matInput
+                type="number"
+                class="currency"
+                formControlName="salary"
+            />
+            <span matTextPrefix>$&nbsp;</span>
         </mat-form-field>
         <!-- isLiableForMilitaryService-->
         <mat-checkbox formControlName="isLiableForMilitaryService"
@@ -185,5 +191,11 @@
 </div>
 <div mat-dialog-actions class="buttons-container">
     <button mat-button (click)="close()">Отмена</button>
-    <button mat-button [disabled]="form.invalid">Создать</button>
+    <button
+        mat-button
+        [disabled]="form.invalid || inProcess()"
+        (click)="create()"
+    >
+        Создать
+    </button>
 </div>

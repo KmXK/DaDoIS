@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
     FormControl,
@@ -28,8 +28,10 @@ import {
     getMaritalStatusName,
     MaritalStatus
 } from '../../../enums/marital-status.enum';
+import { CreateClientModel } from '../../../models/crud/create-client.model';
 import { CitizenshipService } from '../../../services/citizenship.service';
 import { CityService } from '../../../services/city.service';
+import { ClientService } from '../../../services/client.service';
 import { maxDateFilter } from '../../../shared/date-filters';
 import { getEnumMap } from '../../../shared/enum.helper';
 
@@ -57,6 +59,7 @@ export class ClientCreateDialog {
     private readonly dialogRef = inject(MatDialogRef<ClientCreateDialog>);
     private readonly cityService = inject(CityService);
     private readonly citizenshipService = inject(CitizenshipService);
+    private readonly clientService = inject(ClientService);
 
     public readonly birthdayFilter = maxDateFilter(new Date());
     public readonly sexOptions = getEnumMap(Gender, getGenderName);
@@ -73,58 +76,63 @@ export class ClientCreateDialog {
         this.citizenshipService.citizenship$
     );
 
+    public inProcess = signal(false);
+
     public readonly form = new FormGroup({
         firstName: new FormControl('', [
             Validators.required,
-            Validators.pattern('[А-Я][а-я]+')
+            Validators.pattern(/^[А-Я][а-я]+$/)
         ]),
         lastName: new FormControl('', [
             Validators.required,
-            Validators.pattern('[А-Я][а-я]+')
+            Validators.pattern(/^[А-Я][а-я]+$/)
         ]),
         patronymic: new FormControl('', [
             Validators.required,
-            Validators.pattern('[А-Я][а-я]+')
+            Validators.pattern(/^[А-Я][а-я]+$/)
         ]),
-        birthDate: new FormControl(new Date(), [
+        birthDate: new FormControl<Date>(null!, [
             Validators.required,
             Validators.max(Date.now())
         ]),
         sex: new FormControl(Gender.Undefined, [Validators.required]),
         passport: new FormControl('', [
             Validators.required,
-            Validators.pattern('[A-Z]{2}[0-9]{7}')
+            Validators.pattern(/^[A-Z]{2}[0-9]{7}$/)
         ]),
-        passportIssueDate: new FormControl(new Date(), [
+        passportIssueDate: new FormControl<Date>(null!, [
             Validators.required,
             Validators.max(Date.now())
         ]),
         passportIssuer: new FormControl('', [Validators.required]),
         identificationNumber: new FormControl('', [
             Validators.required,
-            Validators.pattern('[0-9A-Z]{14}')
+            Validators.pattern(/^[0-9A-Z]{14}$/)
         ]),
         birthPlace: new FormControl('', [Validators.required]),
-        livingCity: new FormControl('', [Validators.required]),
+        livingCity: new FormControl(-1, [Validators.required]),
         livingAddress: new FormControl('', [Validators.required]),
         homePhoneNumber: new FormControl('', [
-            Validators.pattern('\\+?[0-9]{9}')
+            Validators.pattern(/^[0-9]{7}$/)
         ]),
-        phoneNumber: new FormControl('', [Validators.pattern('\\+?[0-9]{9}')]),
+        phoneNumber: new FormControl('', [Validators.pattern(/\+?[0-9]{12}/)]),
         email: new FormControl('', [Validators.email]),
         workPlace: new FormControl(''),
         position: new FormControl(''),
-        registrationCity: new FormControl('', [Validators.required]),
+        registrationCity: new FormControl(-1, [Validators.required]),
         registrationAddress: new FormControl('', [Validators.required]),
         maritalStatus: new FormControl(MaritalStatus.Single, [
             Validators.required
         ]),
-        citizenship: new FormControl('', [Validators.required]),
+        citizenship: new FormControl(-1, [Validators.required]),
         disabilityGroup: new FormControl(DisabilityGroup.None, [
             Validators.required
         ]),
         isRetired: new FormControl(false),
-        salary: new FormControl(0, [Validators.min(0)]),
+        salary: new FormControl(0, [
+            Validators.min(0),
+            Validators.pattern(/^[0-9]+(\.[0-9]{0,2})?$/)
+        ]),
         isLiableForMilitaryService: new FormControl(false)
     });
 
@@ -134,5 +142,45 @@ export class ClientCreateDialog {
 
     public close(): void {
         this.dialogRef.close();
+    }
+
+    public create(): void {
+        if (this.form.invalid) return;
+
+        this.inProcess.set(true);
+
+        const client: CreateClientModel = {
+            firstName: this.form.value.firstName!,
+            lastName: this.form.value.lastName!,
+            patronymic: this.form.value.patronymic!,
+            birthDate: this.form.value.birthDate!,
+            gender: this.form.value.sex!,
+            passportSeries: this.form.value.passport!.slice(0, 2),
+            passportNumber: this.form.value.passport!.slice(2),
+            passportIssueDate: this.form.value.passportIssueDate!,
+            passportIssuer: this.form.value.passportIssuer!,
+            identificationNumber: this.form.value.identificationNumber!,
+            birthPlace: this.form.value.birthPlace!,
+            livingCityId: this.form.value.livingCity!,
+            livingAddress: this.form.value.livingAddress!,
+            homePhoneNumber: this.form.value.homePhoneNumber,
+            phoneNumber: this.form.value.phoneNumber,
+            email: this.form.value.email,
+            workPlace: this.form.value.workPlace,
+            position: this.form.value.position,
+            registrationCityId: this.form.value.registrationCity!,
+            registrationAddress: this.form.value.registrationAddress!,
+            maritalStatus: this.form.value.maritalStatus!,
+            citizenshipId: this.form.value.citizenship!,
+            disabilityGroup: this.form.value.disabilityGroup!,
+            isRetired: this.form.value.isRetired!,
+            salary: this.form.value.salary,
+            isLiableForMilitaryService:
+                this.form.value.isLiableForMilitaryService!
+        };
+
+        this.clientService
+            .createClient(client)
+            .subscribe(() => this.dialogRef.close());
     }
 }
