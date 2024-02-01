@@ -5,6 +5,8 @@ export enum Gender {
 }
 
 export function getGenderName(gender: Gender): string {
+    console.log(typeof gender);
+
     const map = {
         [Gender.Undefined]: 'Неизвестно',
         [Gender.Male]: 'Мужской',

@@ -1,6 +1,13 @@
 .container {
     padding: 10px;
 
+    .container-head {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        align-items: center;
+    }
+
     .mat-mdc-table {
         border-radius: 8px;
         overflow: hidden !important;

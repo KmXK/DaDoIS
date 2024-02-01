@@ -14,9 +14,9 @@ public class CreateClientDtoValidator : AbstractValidator<CreateClientDto>
     /// <param name="db"></param>
     public CreateClientDtoValidator(AppDbContext db)
     {
-        RuleFor(x => x.FirstName).NotEmpty().Matches("[А-Яа-я]");
-        RuleFor(x => x.LastName).NotEmpty().Matches("[А-Яа-я]");
-        RuleFor(x => x.Patronymic).NotEmpty().Matches("[А-Яа-я]");
+        RuleFor(x => x.FirstName).NotEmpty().Matches("[А-Я][а-я]+");
+        RuleFor(x => x.LastName).NotEmpty().Matches("[А-Я][а-я]+");
+        RuleFor(x => x.Patronymic).NotEmpty().Matches("[А-Я][а-я]+");
         RuleFor(x => x.BirthDate).NotEmpty().LessThan(DateTime.Now);
         RuleFor(x => x.Gender).NotEmpty().IsInEnum();
 
@@ -32,8 +32,8 @@ public class CreateClientDtoValidator : AbstractValidator<CreateClientDto>
         RuleFor(x => x.LivingCityId).NotEmpty().Must((id) => db.Cities.Any(c => c.Id == id));
         RuleFor(x => x.LivingAddress).NotEmpty();
 
-        RuleFor(x => x.HomePhoneNumber).Matches(@"\+?[0-9 ]").When(x => x.HomePhoneNumber != null);
-        RuleFor(x => x.PhoneNumber).Matches(@"\+?[0-9 ]").When(x => x.PhoneNumber != null);
+        RuleFor(x => x.HomePhoneNumber).Matches(@"\+?[0-9]{9}").When(x => x.HomePhoneNumber != null);
+        RuleFor(x => x.PhoneNumber).Matches(@"\+?[0-9]{9}").When(x => x.PhoneNumber != null);
         RuleFor(x => x.Email).EmailAddress().When(x => x.Email != null);
         RuleFor(x => x.WorkPlace);
         RuleFor(x => x.Position);

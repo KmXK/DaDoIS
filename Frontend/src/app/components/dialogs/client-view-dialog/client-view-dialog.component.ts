@@ -1,5 +1,5 @@
 import { DatePipe, KeyValuePipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import {
     MAT_DIALOG_DATA,
@@ -25,13 +25,14 @@ import { Client } from '../../../models/client.model';
     templateUrl: './client-view-dialog.component.html',
     styleUrl: './client-view-dialog.component.scss'
 })
-export class ClientViewDialog {
+export class ClientViewDialog implements OnInit {
     private readonly dialogRef = inject(MatDialogRef<ClientViewDialog>);
+
     public readonly client = inject<Client>(MAT_DIALOG_DATA);
 
     public readonly clientsData = this.mapData(this.client);
 
-    constructor() {
+    public ngOnInit(): void {
         this.dialogRef.updateSize('600px');
     }
 

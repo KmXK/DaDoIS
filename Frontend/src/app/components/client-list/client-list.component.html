@@ -1,5 +1,11 @@
 <div class="container">
-    <h2>Клиенты</h2>
+    <div class="container-head">
+        <h2>Клиенты</h2>
+
+        <button mat-button mat-raised-button (click)="createClient()">
+            Создать
+        </button>
+    </div>
 
     <table [dataSource]="clients" mat-table matSort>
         <ng-container matColumnDef="lastName">
