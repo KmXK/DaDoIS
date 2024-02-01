@@ -193,7 +193,7 @@
     <button mat-button (click)="close()">Отмена</button>
     <button
         mat-button
-        [disabled]="form.invalid || inProcess()"
+        [disabled]="false && (form.invalid || inProcess())"
         (click)="create()"
     >
         Создать

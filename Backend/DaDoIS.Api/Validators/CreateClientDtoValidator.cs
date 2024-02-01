@@ -34,9 +34,9 @@ public class CreateClientDtoValidator : AbstractValidator<CreateClientDto>
         RuleFor(x => x.LivingCityId).Must((id) => db.Cities.Any(c => c.Id == id));
         RuleFor(x => x.LivingAddress).NotEmpty();
 
-        RuleFor(x => x.HomePhoneNumber).Matches(@"^\+?[0-9]{7}$").When(x => x.HomePhoneNumber != null);
-        RuleFor(x => x.PhoneNumber).Matches(@"^\+?[0-9]{12}$").When(x => x.PhoneNumber != null);
-        RuleFor(x => x.Email).EmailAddress().When(x => x.Email != null);
+        RuleFor(x => x.HomePhoneNumber).Matches(@"^\+?[0-9]{7}$").When(x => !string.IsNullOrWhiteSpace(x.HomePhoneNumber));
+        RuleFor(x => x.PhoneNumber).Matches(@"^\+?[0-9]{12}$").When(x => !string.IsNullOrWhiteSpace(x.PhoneNumber));
+        RuleFor(x => x.Email).EmailAddress().When(x => !string.IsNullOrWhiteSpace(x.Email));
         RuleFor(x => x.WorkPlace);
         RuleFor(x => x.Position);
 
