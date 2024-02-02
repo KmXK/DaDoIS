@@ -74,19 +74,23 @@ namespace DaDoIS.Api.Controllers
         /// <param name="clientDto"></param>
         /// <returns></returns>
         [HttpPut]
-        public async Task<ActionResult> UpdateClient([FromBody] ClientDto clientDto)
+        public async Task<ActionResult> UpdateClient([FromBody] UpdateClientDto clientDto)
         {
             var id = clientDto.Id;
-            if (db.Clients.Find(id) != null)
+
+            var client = await db.Clients.FirstOrDefaultAsync(x => x.Id == id);
+            
+            if (client != null)
             {
                 var createClientDto = mapper.Map<CreateClientDto>(clientDto);
                 var validationResult = await validator.ValidateAsync(createClientDto);
                 if (!validationResult.IsValid)
                     return BadRequest(validationResult.Errors);
 
-                var client = db.Clients.Update(mapper.Map<Client>(clientDto));
-                db.SaveChanges();
-                return Ok(mapper.Map<ClientDto>(client.Entity));
+                mapper.Map(clientDto, client);
+                
+                await db.SaveChangesAsync();
+                return Ok(mapper.Map<ClientDto>(client));
             }
             return NotFound();
         }

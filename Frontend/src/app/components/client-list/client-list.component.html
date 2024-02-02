@@ -7,7 +7,12 @@
         </button>
     </div>
 
-    <table [dataSource]="clients" mat-table matSort>
+    <table
+        [dataSource]="clients()"
+        mat-table
+        matSort
+        (matSortChange)="sortData($event)"
+    >
         <ng-container matColumnDef="lastName">
             <th *matHeaderCellDef mat-header-cell mat-sort-header>Фамилия</th>
             <td *matCellDef="let element" mat-cell>{{ element.lastName }}</td>
@@ -21,6 +26,26 @@
         <ng-container matColumnDef="patronymic">
             <th *matHeaderCellDef mat-header-cell mat-sort-header>Отчество</th>
             <td *matCellDef="let element" mat-cell>{{ element.patronymic }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+            <th *matHeaderCellDef mat-header-cell>Действия</th>
+            <td *matCellDef="let element" mat-cell>
+                <button
+                    mat-button
+                    mat-raised-button
+                    (click)="delete(element.id, $event)"
+                >
+                    Удалить
+                </button>
+                <button
+                    mat-button
+                    mat-raised-button
+                    (click)="edit(element, $event)"
+                >
+                    Изменить
+                </button>
+            </td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

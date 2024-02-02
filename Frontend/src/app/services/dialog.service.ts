@@ -19,9 +19,9 @@ export class DialogService {
         return dialog.afterOpened();
     }
 
-    public openCreateClientDialog(): Observable<void> {
+    public openCreateClientDialog(client?: Client): Observable<void> {
         const dialog = this.matDialog.open(ClientCreateDialog, {
-            data: null
+            data: client
         });
 
         return dialog.afterOpened();

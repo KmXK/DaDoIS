@@ -75,7 +75,7 @@ public record ClientDto
     /// <summary>
     /// Город фактического проживания
     /// </summary>
-    public required City LivingCity { get; set; }
+    public City LivingCity { get; set; }
 
     /// <summary>
     /// Адрес фактического проживания
@@ -115,7 +115,7 @@ public record ClientDto
     /// <summary>
     /// Город прописки
     /// </summary>
-    public required City RegistrationCity { get; set; }
+    public City RegistrationCity { get; set; }
 
     /// <summary>
     /// Адрес прописки
@@ -135,7 +135,7 @@ public record ClientDto
     /// <summary>
     /// Гражданство
     /// </summary>
-    public required Citizenship Citizenship { get; set; }
+    public Citizenship Citizenship { get; set; }
 
     /// <summary>
     /// Инвалидность
@@ -158,10 +158,15 @@ public record ClientDto
     public bool IsLiableForMilitaryService { get; set; }
 }
 
+public class UpdateClientDto : CreateClientDto
+{
+    public required Guid Id { get; set; }
+}
+
 /// <summary>
 /// Сущность "Создание клиента"
 /// </summary>
-public record CreateClientDto
+public class CreateClientDto
 {
     /// <summary>
     /// Имя

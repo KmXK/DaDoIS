@@ -22,14 +22,14 @@ public class CreateClientDtoValidator : AbstractValidator<CreateClientDto>
 
         RuleFor(x => x.PassportSeries).Matches("^[A-Z]{2}$");
         RuleFor(x => x.PassportNumber).Matches("^[0-9]{7}$");
-        RuleFor(x => x.PassportSeries + x.PassportNumber).Must((passportCode) =>
-            !db.Clients.Any(c => passportCode.Equals(c.PassportSeries + c.PassportNumber)))
-            .WithName("Passport")
-            .WithMessage("Passport must be unique.");
+        // RuleFor(x => x.PassportSeries + x.PassportNumber).Must((passportCode) =>
+        //     db.Clients.FirstOrDefault(c => passportCode.Equals(c.PassportSeries + c.PassportNumber)))
+        //     .WithName("Passport")
+        //     .WithMessage("Passport must be unique.");
 
         RuleFor(x => x.PassportIssuer).NotEmpty();
         RuleFor(x => x.PassportIssueDate).NotEmpty().LessThan(DateTime.Now);
-        RuleFor(x => x.IdentificationNumber).Matches("^[0-9A-Z]{14}$").Must((id) => !db.Clients.Any(c => c.IdentificationNumber == id));
+        // RuleFor(x => x.IdentificationNumber).Matches("^[0-9A-Z]{14}$").Must((id) => !db.Clients.Any(c => c.IdentificationNumber == id));
         RuleFor(x => x.BirthPlace).NotEmpty();
         RuleFor(x => x.LivingCityId).Must((id) => db.Cities.Any(c => c.Id == id));
         RuleFor(x => x.LivingAddress).NotEmpty();

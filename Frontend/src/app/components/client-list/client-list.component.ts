@@ -1,8 +1,9 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { MatButton } from '@angular/material/button';
-import { MatSort, MatSortHeader } from '@angular/material/sort';
+import { MatSort, MatSortHeader, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
+import { map } from 'rxjs';
 import { Client } from '../../models/client.model';
 import { ClientService } from '../../services/client.service';
 import { DialogService } from '../../services/dialog.service';
@@ -18,8 +19,13 @@ export class ClientListComponent {
     private readonly clientService = inject(ClientService);
     private readonly dialogService = inject(DialogService);
 
-    public readonly clients = this.clientService.clients;
-    public readonly displayedColumns = ['lastName', 'firstName', 'patronymic'];
+    public clients = signal(this.clientService.clients);
+    public readonly displayedColumns = [
+        'lastName',
+        'firstName',
+        'patronymic',
+        'actions'
+    ];
 
     public clientClick(client: Client): void {
         this.dialogService.openClientDialog(client);
@@ -29,5 +35,31 @@ export class ClientListComponent {
         this.dialogService.openCreateClientDialog().subscribe(() => {
             this.clientService.updateClients();
         });
+    }
+
+    public delete(id: string, event: MouseEvent): void {
+        this.clientService.delete(id).subscribe(() => {});
+        event.stopPropagation();
+    }
+
+    public sortData(event: Sort): void {
+        // TODO: Sorting
+        // @ts-ignore
+        this.clients.set(
+            this.clientService.clients.pipe(
+                map(c =>
+                    c.sort(
+                        (a: any, b: any) =>
+                            (event.direction ? 1 : -1) *
+                            (a[event.active] - b[event.active])
+                    )
+                )
+            )
+        );
+    }
+
+    public edit(client: Client, event: MouseEvent): void {
+        this.dialogService.openCreateClientDialog(client);
+        event.stopPropagation();
     }
 }

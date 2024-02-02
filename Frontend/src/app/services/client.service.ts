@@ -24,4 +24,19 @@ export class ClientService {
             .post<void>('/api/clients', client)
             .pipe(tap(() => this.updateClients()));
     }
+
+    public delete(id: string): Observable<void> {
+        return this.apiService
+            .delete(`/api/clients/${id}`)
+            .pipe(tap(() => this.updateClients()));
+    }
+
+    public edit(
+        id: string,
+        client: CreateClientModel
+    ): Observable<CreateClientModel> {
+        return this.apiService
+            .put(`/api/clients`, { ...client, id })
+            .pipe(tap(() => this.updateClients()));
+    }
 }

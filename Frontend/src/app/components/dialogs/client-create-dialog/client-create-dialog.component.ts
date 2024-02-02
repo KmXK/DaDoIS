@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
     FormControl,
@@ -15,10 +15,15 @@ import {
     provideNativeDateAdapter
 } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import {
+    MAT_DIALOG_DATA,
+    MatDialogModule,
+    MatDialogRef
+} from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { Observer } from 'rxjs';
 import {
     DisabilityGroup,
     getDisabilityGroupName
@@ -28,6 +33,7 @@ import {
     getMaritalStatusName,
     MaritalStatus
 } from '../../../enums/marital-status.enum';
+import { Client } from '../../../models/client.model';
 import { CreateClientModel } from '../../../models/crud/create-client.model';
 import { CitizenshipService } from '../../../services/citizenship.service';
 import { CityService } from '../../../services/city.service';
@@ -55,11 +61,13 @@ import { getEnumMap } from '../../../shared/enum.helper';
     templateUrl: './client-create-dialog.component.html',
     styleUrl: './client-create-dialog.component.scss'
 })
-export class ClientCreateDialog {
+export class ClientCreateDialog implements OnInit {
     private readonly dialogRef = inject(MatDialogRef<ClientCreateDialog>);
     private readonly cityService = inject(CityService);
     private readonly citizenshipService = inject(CitizenshipService);
     private readonly clientService = inject(ClientService);
+
+    public readonly client: Client | undefined = inject(MAT_DIALOG_DATA);
 
     public readonly birthdayFilter = maxDateFilter(new Date());
     public readonly sexOptions = getEnumMap(Gender, getGenderName);
@@ -136,8 +144,26 @@ export class ClientCreateDialog {
         isLiableForMilitaryService: new FormControl(false)
     });
 
-    constructor() {
+    public ngOnInit(): void {
         this.dialogRef.updateSize('600px');
+
+        if (this.client === undefined) {
+            return;
+        }
+
+        for (const key in this.client) {
+            if (key in this.form.controls) {
+                this.form.controls[key].setValue(this.client[key]);
+            }
+        }
+        this.form.controls.livingCity.setValue(this.client.livingCity.id);
+        this.form.controls.passport.setValue(
+            this.client.passportSeries + this.client.passportNumber
+        );
+        this.form.controls.registrationCity.setValue(
+            this.client.registrationCity.id
+        );
+        this.form.controls.citizenship.setValue(this.client.citizenship.id);
     }
 
     public close(): void {
@@ -179,7 +205,10 @@ export class ClientCreateDialog {
                 this.form.value.isLiableForMilitaryService!
         };
 
-        this.clientService.createClient(client).subscribe({
+        const obj:
+            | Partial<Observer<any>>
+            | ((value: void) => void)
+            | undefined = {
             next: () => {
                 this.dialogRef.close();
             },
@@ -195,7 +224,13 @@ export class ClientCreateDialog {
             complete: () => {
                 this.inProcess.set(false);
             }
-        });
+        };
+
+        if (this.client === undefined) {
+            this.clientService.createClient(client).subscribe(obj);
+        } else {
+            this.clientService.edit(this.client.id, client).subscribe(obj);
+        }
     }
 
     private showErrors(
