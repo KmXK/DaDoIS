@@ -4,14 +4,8 @@ using DaDoIS.Data.Entities;
 
 namespace DaDoIS.Api.Services;
 
-/// <summary>
-/// Сервис для заполнения базы данных начальными значениями
-/// </summary>
 public class DataSeedService(AppDbContext dbContext, IMapper mapper)
 {
-    /// <summary>
-    /// Заполнение базы данных начальными значениями
-    /// </summary>
     public void Seed()
     {
         if (!dbContext.Cities.Any() && !dbContext.Citizenship.Any() && !dbContext.Cities.Any())
