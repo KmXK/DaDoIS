@@ -12,6 +12,8 @@ public class DepositContract
     public required int DepositId { get; set; }
     public required DateTime DateBegin { get; set; }
     public required DateTime DateEnd { get; set; }
+    public required bool IsActive { get; set; }
+    public required int DaysToEnd { get; set; }
     [Column(TypeName = "money")]
     public required double Amount { get; set; }
 }

@@ -32,6 +32,7 @@ public record ClientDto
     public bool IsRetired { get; set; }
     public double? Salary { get; set; }
     public bool IsLiableForMilitaryService { get; set; }
+    public List<DepositContractDto>? DepositContracts { get; set; }
 }
 
 [GraphQLName("CreateClient")]

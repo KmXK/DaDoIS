@@ -1,7 +1,7 @@
 namespace DaDoIS.Api.Dto;
 
 [GraphQLName("Deposit")]
-public class DepositDto
+public record DepositDto
 {
     public int Id { get; set; }
     public required string Name { get; set; }
@@ -11,7 +11,7 @@ public class DepositDto
 }
 
 [GraphQLName("CreateDeposit")]
-public class CreateDepositDto
+public record CreateDepositDto
 {
     public required string Name { get; set; }
     public required int Period { get; set; }
