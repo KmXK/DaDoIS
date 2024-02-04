@@ -11,11 +11,11 @@ public class DepositContractConfiguration : IEntityTypeConfiguration<DepositCont
         builder
             .HasOne(x => x.Client)
             .WithMany(t => t.DepositContracts)
-            .OnDelete(DeleteBehavior.SetNull);
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .HasOne(x => x.Deposit)
             .WithMany()
-            .OnDelete(DeleteBehavior.SetNull);
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

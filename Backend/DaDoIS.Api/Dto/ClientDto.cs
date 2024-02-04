@@ -1,6 +1,6 @@
 ﻿using DaDoIS.Data.Entities;
 
-namespace DaDoIS.Api;
+namespace DaDoIS.Api.Dto;
 
 [GraphQLName("Client")]
 public record ClientDto
@@ -33,6 +33,8 @@ public record ClientDto
     public double? Salary { get; set; }
     public bool IsLiableForMilitaryService { get; set; }
 }
+
+[GraphQLName("CreateClient")]
 public record CreateClientDto
 {
     public required string FirstName { get; set; }
@@ -63,6 +65,7 @@ public record CreateClientDto
     public bool IsLiableForMilitaryService { get; set; }
 }
 
+[GraphQLName("UpdateClient")]
 public record UpdateClientDto
 {
     public required Guid Id { get; set; }

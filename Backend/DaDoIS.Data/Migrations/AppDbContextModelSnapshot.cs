@@ -346,13 +346,13 @@ namespace DaDoIS.Data.Migrations
                     b.HasOne("DaDoIS.Data.Entities.Client", "Client")
                         .WithMany("DepositContracts")
                         .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("DaDoIS.Data.Entities.Deposit", "Deposit")
                         .WithMany()
                         .HasForeignKey("DepositId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Client");
@@ -365,13 +365,13 @@ namespace DaDoIS.Data.Migrations
                     b.HasOne("DaDoIS.Data.Entities.BankAccount", "Source")
                         .WithMany()
                         .HasForeignKey("SourceId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("DaDoIS.Data.Entities.BankAccount", "Target")
                         .WithMany()
                         .HasForeignKey("TargetId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Source");

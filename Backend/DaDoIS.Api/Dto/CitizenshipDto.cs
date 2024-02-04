@@ -1,4 +1,4 @@
-﻿namespace DaDoIS.Api;
+﻿namespace DaDoIS.Api.Dto;
 
 [GraphQLName("Citizenship")]
 public record CitizenshipDto

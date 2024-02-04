@@ -11,11 +11,11 @@ public class TransitionLogConfiguration : IEntityTypeConfiguration<TransitLog>
         builder
             .HasOne(x => x.Source)
             .WithMany()
-            .OnDelete(DeleteBehavior.SetNull);
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .HasOne(x => x.Target)
             .WithMany()
-            .OnDelete(DeleteBehavior.SetNull);
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DaDoIS.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240204113615_Deposites")]
-    partial class Deposites
+    [Migration("20240204180258_Deposits")]
+    partial class Deposits
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -349,13 +349,13 @@ namespace DaDoIS.Data.Migrations
                     b.HasOne("DaDoIS.Data.Entities.Client", "Client")
                         .WithMany("DepositContracts")
                         .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("DaDoIS.Data.Entities.Deposit", "Deposit")
                         .WithMany()
                         .HasForeignKey("DepositId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Client");
@@ -368,13 +368,13 @@ namespace DaDoIS.Data.Migrations
                     b.HasOne("DaDoIS.Data.Entities.BankAccount", "Source")
                         .WithMany()
                         .HasForeignKey("SourceId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("DaDoIS.Data.Entities.BankAccount", "Target")
                         .WithMany()
                         .HasForeignKey("TargetId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Source");

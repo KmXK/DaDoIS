@@ -1,4 +1,5 @@
 using AutoMapper;
+using DaDoIS.Api.Dto;
 using DaDoIS.Data;
 using DaDoIS.Data.Entities;
 
@@ -13,8 +14,8 @@ public class DataSeed(AppDbContext db, IMapper mapper)
             !db.Citizenship.Any() &&
             !db.Clients.Any() &&
             !db.Currencies.Any() &&
-            !db.BankAccounts.Any() &&
             !db.Deposits.Any() &&
+            !db.BankAccounts.Any() &&
             !db.DepositContracts.Any() &&
             !db.TransitLogs.Any()
         )
