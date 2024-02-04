@@ -4,13 +4,22 @@ using DaDoIS.Data.Entities;
 
 namespace DaDoIS.Api.Configuration;
 
-public class DataSeed(AppDbContext dbContext, IMapper mapper)
+public class DataSeed(AppDbContext db, IMapper mapper)
 {
     public void Seed()
     {
-        if (!dbContext.Cities.Any() && !dbContext.Citizenship.Any() && !dbContext.Cities.Any())
+        if (
+            !db.Cities.Any() &&
+            !db.Citizenship.Any() &&
+            !db.Clients.Any() &&
+            !db.Currencies.Any() &&
+            !db.BankAccounts.Any() &&
+            !db.Deposits.Any() &&
+            !db.DepositContracts.Any() &&
+            !db.TransitLogs.Any()
+        )
         {
-            dbContext.Cities.AddRange(
+            db.Cities.AddRange(
                 new List<City>
                 {
                     new() { Name = "Брест" },
@@ -21,20 +30,18 @@ public class DataSeed(AppDbContext dbContext, IMapper mapper)
                     new() { Name = "Могилев" },
                 }
             );
+            db.SaveChanges();
 
-            dbContext.SaveChanges();
-
-            dbContext.Citizenship.AddRange(
+            db.Citizenship.AddRange(
                 new List<Citizenship>
                 {
                     new() { Name = "Республика Беларусь" },
                     new() { Name = "Российская Федерация" },
                 }
             );
+            db.SaveChanges();
 
-            dbContext.SaveChanges();
-
-            dbContext.Clients.AddRange(
+            db.Clients.AddRange(
                 new List<CreateClientDto>
                 {
                     new() {
@@ -49,12 +56,12 @@ public class DataSeed(AppDbContext dbContext, IMapper mapper)
                         PassportIssueDate = DateTime.Parse("2015-01-01"),
                         IdentificationNumber = "7911111A000PB8",
                         BirthPlace = "Минск",
-                        LivingCityId = dbContext.Cities.First().Id,
+                        LivingCityId = db.Cities.First().Id,
                         LivingAddress = "Минск, ул. Пушкина, д. 23",
-                        RegistrationCityId = dbContext.Cities.First().Id,
+                        RegistrationCityId = db.Cities.First().Id,
                         RegistrationAddress = "Минск, ул. Пушкина, д. 23",
                         MaritalStatus = MaritalStatus.Single,
-                        CitizenshipId = dbContext.Citizenship.First().Id,
+                        CitizenshipId = db.Citizenship.First().Id,
                         DisabilityGroup = DisabilityGroup.None,
                         IsRetired = false,
                         IsLiableForMilitaryService = true,
@@ -62,8 +69,67 @@ public class DataSeed(AppDbContext dbContext, IMapper mapper)
 
                 }.Select(mapper.Map<Client>)
             );
+            db.SaveChanges();
 
-            dbContext.SaveChanges();
+            db.Currencies.AddRange(
+                new List<Currency>(){
+                    new() {
+                        Name = "BYN",
+                        ExchangeRate = 1
+                    },
+                    new() {
+                        Name = "RUB",
+                        ExchangeRate = 0.03513
+                    },
+                    new() {
+                        Name = "USD",
+                        ExchangeRate = 3.20
+                    },
+                    new() {
+                        Name = "EUR",
+                        ExchangeRate = 3.485
+                    },
+                }
+            );
+            db.SaveChanges();
+
+            db.BankAccounts.AddRange(
+                new List<BankAccount>(){
+                    new () {
+                        Debit = 0,
+                        Credit = 100_000_000_000,
+                        CurrencyId = 1,
+                        Currency = db.Currencies.Find(1)!,
+                        Type = AccountType.Main,
+                    },
+                    new () {
+                        Debit = 0,
+                        Credit =0,
+                        CurrencyId = 1,
+                        Currency = db.Currencies.Find(1)!,
+                        Type = AccountType.Cash,
+                    },
+                }
+            );
+            db.SaveChanges();
+
+            db.Deposits.AddRange(
+                new List<Deposit>(){
+                    new() {
+                        Name = "Online-стратегия",
+                        Interest = 10,
+                        Period = 90,
+                        IsRevocable = true,
+                    },
+                    new() {
+                        Name = "Online-решение new",
+                        Interest = 13.5,
+                        Period = 9 * 30,
+                        IsRevocable = false
+                    }
+                }
+            );
+            db.SaveChanges();
         }
     }
 }

@@ -4,7 +4,7 @@ public class Deposit
 {
     public int Id { get; set; }
     public required string Name { get; set; }
-    public int Period { get; set; }
-    public double Interest { get; set; }
-    public bool IsRevocable { get; set; }
+    public required int Period { get; set; }
+    public required double Interest { get; set; }
+    public required bool IsRevocable { get; set; }
 }
