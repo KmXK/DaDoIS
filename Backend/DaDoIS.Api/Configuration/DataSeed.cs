@@ -2,9 +2,9 @@ using AutoMapper;
 using DaDoIS.Data;
 using DaDoIS.Data.Entities;
 
-namespace DaDoIS.Api.Services;
+namespace DaDoIS.Api.Configuration;
 
-public class DataSeedService(AppDbContext dbContext, IMapper mapper)
+public class DataSeed(AppDbContext dbContext, IMapper mapper)
 {
     public void Seed()
     {

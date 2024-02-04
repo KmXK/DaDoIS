@@ -74,4 +74,6 @@ public class Client
     public double? Salary { get; init; }
 
     public bool IsLiableForMilitaryService { get; init; }
+
+    public virtual List<DepositContract>? DepositContracts { get; init; }
 }
