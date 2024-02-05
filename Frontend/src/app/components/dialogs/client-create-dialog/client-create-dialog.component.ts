@@ -103,7 +103,7 @@ export class ClientCreateDialog implements OnInit {
             Validators.required,
             Validators.max(Date.now())
         ]),
-        sex: new FormControl(Gender.Undefined, [Validators.required]),
+        gender: new FormControl(Gender.Undefined, [Validators.required]),
         passport: new FormControl('', [
             Validators.required,
             Validators.pattern(/^[A-Z]{2}[0-9]{7}$/)
@@ -137,10 +137,15 @@ export class ClientCreateDialog implements OnInit {
             Validators.required
         ]),
         isRetired: new FormControl(false),
-        salary: new FormControl(0, [
-            Validators.min(0),
-            Validators.pattern(/^[0-9]+(\.[0-9]{0,2})?$/)
-        ]),
+        salary: new FormControl<number | null>(
+            null,
+            // optionalValidator([
+            [
+                Validators.min(0),
+                Validators.pattern(/^[0-9]*(\.[0-9]{0,2})?$/)
+                // ])
+            ]
+        ),
         isLiableForMilitaryService: new FormControl(false)
     });
 
@@ -151,8 +156,10 @@ export class ClientCreateDialog implements OnInit {
             return;
         }
 
-        for (const key in this.client) {
+        for (const key of Object.getOwnPropertyNames(this.client)) {
             if (key in this.form.controls) {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
                 this.form.controls[key].setValue(this.client[key]);
             }
         }
@@ -180,7 +187,7 @@ export class ClientCreateDialog implements OnInit {
             lastName: this.form.value.lastName!,
             patronymic: this.form.value.patronymic!,
             birthDate: this.form.value.birthDate!,
-            gender: this.form.value.sex!,
+            gender: this.form.value.gender!,
             passportSeries: this.form.value.passport!.slice(0, 2),
             passportNumber: this.form.value.passport!.slice(2),
             passportIssueDate: this.form.value.passportIssueDate!,
@@ -200,13 +207,13 @@ export class ClientCreateDialog implements OnInit {
             citizenshipId: this.form.value.citizenship!,
             disabilityGroup: this.form.value.disabilityGroup!,
             isRetired: this.form.value.isRetired!,
-            salary: this.form.value.salary,
+            salary: this.form.value.salary ? +this.form.value.salary : null,
             isLiableForMilitaryService:
                 this.form.value.isLiableForMilitaryService!
         };
 
         const obj:
-            | Partial<Observer<any>>
+            | Partial<Observer<CreateClientModel | void>>
             | ((value: void) => void)
             | undefined = {
             next: () => {
@@ -241,8 +248,7 @@ export class ClientCreateDialog implements OnInit {
             passportNumber: 'passport',
             citizenshipId: 'citizenship',
             registrationCityId: 'registrationCity',
-            livingCityId: 'livingCity',
-            gender: 'sex'
+            livingCityId: 'livingCity'
         };
 
         if (Array.isArray(errors) && errors.length > 0) {
@@ -254,6 +260,7 @@ export class ClientCreateDialog implements OnInit {
                     error.propertyName.slice(1);
 
                 const controlName = controlsMap[propertyName] || propertyName;
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
                 this.form.controls[controlName]?.setErrors({
                     serverError: true
