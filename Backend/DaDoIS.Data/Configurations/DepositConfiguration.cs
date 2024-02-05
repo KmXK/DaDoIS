@@ -4,18 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DaDoIS.Data.Configurations;
 
-public class BankAccountConfiguration : IEntityTypeConfiguration<BankAccount>
+public class DepositConfiguration : IEntityTypeConfiguration<Deposit>
 {
-    public void Configure(EntityTypeBuilder<BankAccount> builder)
+    public void Configure(EntityTypeBuilder<Deposit> builder)
     {
         builder
             .HasOne(x => x.Currency)
             .WithMany()
-            .OnDelete(DeleteBehavior.NoAction);
-
-        builder
-            .HasOne(x => x.DepositContract)
-            .WithMany(t => t.BankAccounts)
             .OnDelete(DeleteBehavior.NoAction);
     }
 }

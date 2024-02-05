@@ -101,14 +101,17 @@ public class DataSeed(AppDbContext db, IMapper mapper)
                         Credit = 100_000_000_000,
                         CurrencyId = 1,
                         Currency = db.Currencies.Find(1)!,
-                        Type = AccountType.Main,
+                        AccountType = AccountType.Passive,
+                        TypeOfAccount = TypeOfAccount.Main
+
                     },
                     new () {
                         Debit = 0,
-                        Credit =0,
+                        Credit = 0,
                         CurrencyId = 1,
                         Currency = db.Currencies.Find(1)!,
-                        Type = AccountType.Cash,
+                        AccountType = AccountType.Active,
+                        TypeOfAccount = TypeOfAccount.Cash
                     },
                 }
             );
@@ -121,12 +124,16 @@ public class DataSeed(AppDbContext db, IMapper mapper)
                         Interest = 10,
                         Period = 90,
                         IsRevocable = true,
+                        Currency = db.Currencies.Find(1)!,
+                        CurrencyId = 1
                     },
                     new() {
                         Name = "Online-решение new",
                         Interest = 13.5,
                         Period = 9 * 30,
-                        IsRevocable = false
+                        IsRevocable = false,
+                        Currency = db.Currencies.Find(1)!,
+                        CurrencyId = 1
                     }
                 }
             );
