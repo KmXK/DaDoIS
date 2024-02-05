@@ -35,7 +35,7 @@ public class Client
 
     public required string BirthPlace { get; init; }
 
-    public required City LivingCity { get; init; }
+    public virtual required City LivingCity { get; init; }
 
     public required int LivingCityId { get; init; }
 
@@ -54,7 +54,7 @@ public class Client
 
     public string? Position { get; init; }
 
-    public required City RegistrationCity { get; init; }
+    public virtual required City RegistrationCity { get; init; }
 
     public required int RegistrationCityId { get; init; }
 
@@ -62,7 +62,7 @@ public class Client
 
     public MaritalStatus MaritalStatus { get; init; }
 
-    public required Citizenship Citizenship { get; init; }
+    public virtual required Citizenship Citizenship { get; init; }
 
     public required int CitizenshipId { get; init; }
 
@@ -74,4 +74,6 @@ public class Client
     public double? Salary { get; init; }
 
     public bool IsLiableForMilitaryService { get; init; }
+
+    public virtual List<DepositContract>? DepositContracts { get; init; }
 }

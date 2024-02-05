@@ -1,0 +1,201 @@
+<h1 mat-dialog-title>Новый клиент</h1>
+<div mat-dialog-content>
+    <form [formGroup]="form">
+        <mat-form-field>
+            <mat-label>Фамилия</mat-label>
+            <input matInput formControlName="lastName" />
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Имя</mat-label>
+            <input matInput formControlName="firstName" />
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Отчество</mat-label>
+            <input matInput formControlName="patronymic" />
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>День рождения</mat-label>
+            <input
+                matInput
+                [matDatepicker]="birthdayPickerElement"
+                [matDatepickerFilter]="birthdayFilter"
+                formControlName="birthDate"
+            />
+            <mat-datepicker-toggle
+                matIconSuffix
+                [for]="birthdayPickerElement"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #birthdayPickerElement></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Пол</mat-label>
+            <mat-select formControlName="sex">
+                @for (option of sexOptions; track option.value) {
+                    <mat-option [value]="option.value">
+                        {{ option.name }}
+                    </mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Паспорт</mat-label>
+            <input
+                matInput
+                pattern="[A-Z]{2}[0-9]{7}"
+                formControlName="passport"
+            />
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Дата выдачи паспорта</mat-label>
+            <input
+                matInput
+                [matDatepicker]="issueDatePicker"
+                [matDatepickerFilter]="birthdayFilter"
+                formControlName="passportIssueDate"
+            />
+            <mat-datepicker-toggle
+                matIconSuffix
+                [for]="issueDatePicker"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #issueDatePicker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Кем выдан</mat-label>
+            <input matInput formControlName="passportIssuer" />
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Идентификационный номер</mat-label>
+            <input matInput formControlName="identificationNumber" />
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Место рождения</mat-label>
+            <input matInput formControlName="birthPlace" />
+        </mat-form-field>
+        <!-- Living city-->
+        <mat-form-field>
+            <mat-label>Город проживания</mat-label>
+            <mat-select formControlName="livingCity">
+                @for (city of cities(); track city.id) {
+                    <mat-option [value]="city.id">
+                        {{ city.name }}
+                    </mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+        <!-- Living address-->
+        <mat-form-field>
+            <mat-label>Адрес проживания</mat-label>
+            <input matInput formControlName="livingAddress" />
+        </mat-form-field>
+        <!-- Home phone number-->
+        <mat-form-field>
+            <mat-label>Телефон домашний</mat-label>
+            <input matInput type="text" formControlName="homePhoneNumber" />
+        </mat-form-field>
+        <!-- Phone number-->
+        <mat-form-field>
+            <mat-label>Телефон мобильный</mat-label>
+            <input matInput type="text" formControlName="phoneNumber" />
+        </mat-form-field>
+        <!-- Email-->
+        <mat-form-field>
+            <mat-label>E-mail</mat-label>
+            <input matInput type="email" formControlName="email" />
+        </mat-form-field>
+        <!-- Work place-->
+        <mat-form-field>
+            <mat-label>Место работы</mat-label>
+            <input matInput formControlName="workPlace" />
+        </mat-form-field>
+        <!-- Position-->
+        <mat-form-field>
+            <mat-label>Должность</mat-label>
+            <input matInput formControlName="position" />
+        </mat-form-field>
+        <!-- registration city-->
+        <mat-form-field>
+            <mat-label>Город прописки</mat-label>
+            <mat-select formControlName="registrationCity">
+                @for (city of cities(); track city.id) {
+                    <mat-option [value]="city.id">
+                        {{ city.name }}
+                    </mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+        <!-- registration address-->
+        <mat-form-field>
+            <mat-label>Адрес прописки</mat-label>
+            <input matInput formControlName="registrationAddress" />
+        </mat-form-field>
+        <!-- marital status-->
+        <mat-form-field>
+            <mat-label>Семейное положение</mat-label>
+            <mat-select formControlName="maritalStatus">
+                @for (option of maritalStatusOptions; track option.value) {
+                    <mat-option [value]="option.value">
+                        {{ option.name }}
+                    </mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+        <!-- citizenship-->
+        <mat-form-field>
+            <mat-label>Гражданство</mat-label>
+            <mat-select formControlName="citizenship">
+                @for (citizenship of citizenship(); track citizenship.id) {
+                    <mat-option [value]="citizenship.id">
+                        {{ citizenship.name }}
+                    </mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+        <!-- disability group-->
+        <mat-form-field>
+            <mat-label>Инвалидность</mat-label>
+            <mat-select formControlName="disabilityGroup">
+                @for (option of disabilityGroupOptions; track option.value) {
+                    <mat-option [value]="option.value">
+                        {{ option.name }}
+                    </mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+        <!-- is retired-->
+        <mat-checkbox formControlName="isRetired">Пенсионер?</mat-checkbox>
+        <!-- salary-->
+        <mat-form-field>
+            <mat-label>Ежемесячный доход</mat-label>
+            <input
+                matInput
+                type="number"
+                class="currency"
+                formControlName="salary"
+            />
+            <span matTextPrefix>$&nbsp;</span>
+        </mat-form-field>
+        <!-- isLiableForMilitaryService-->
+        <mat-checkbox formControlName="isLiableForMilitaryService"
+            >Военнообязанный?</mat-checkbox
+        >
+    </form>
+</div>
+<div mat-dialog-actions class="buttons-container">
+    <button mat-button (click)="close()">Отмена</button>
+    <button
+        mat-button
+        [disabled]="false && (form.invalid || inProcess())"
+        (click)="create()"
+    >
+        Создать
+    </button>
+</div>
