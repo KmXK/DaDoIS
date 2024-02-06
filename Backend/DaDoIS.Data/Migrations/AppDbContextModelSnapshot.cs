@@ -31,6 +31,9 @@ namespace DaDoIS.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("AccountType")
+                        .HasColumnType("int");
+
                     b.Property<double>("Credit")
                         .HasColumnType("float");
 
@@ -40,12 +43,17 @@ namespace DaDoIS.Data.Migrations
                     b.Property<double>("Debit")
                         .HasColumnType("float");
 
-                    b.Property<int>("Type")
+                    b.Property<int?>("DepositContractId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TypeOfAccount")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CurrencyId");
+
+                    b.HasIndex("DepositContractId");
 
                     b.ToTable("BankAccounts");
                 });
@@ -222,6 +230,9 @@ namespace DaDoIS.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CurrencyId")
+                        .HasColumnType("int");
+
                     b.Property<double>("Interest")
                         .HasColumnType("float");
 
@@ -236,6 +247,8 @@ namespace DaDoIS.Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CurrencyId");
 
                     b.ToTable("Deposits");
                 });
@@ -294,10 +307,10 @@ namespace DaDoIS.Data.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("SourceId")
+                    b.Property<Guid?>("SourceId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("TargetId")
+                    b.Property<Guid?>("TargetId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -317,7 +330,14 @@ namespace DaDoIS.Data.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("DaDoIS.Data.Entities.DepositContract", "DepositContract")
+                        .WithMany("BankAccounts")
+                        .HasForeignKey("DepositContractId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.Navigation("Currency");
+
+                    b.Navigation("DepositContract");
                 });
 
             modelBuilder.Entity("DaDoIS.Data.Entities.Client", b =>
@@ -347,6 +367,17 @@ namespace DaDoIS.Data.Migrations
                     b.Navigation("RegistrationCity");
                 });
 
+            modelBuilder.Entity("DaDoIS.Data.Entities.Deposit", b =>
+                {
+                    b.HasOne("DaDoIS.Data.Entities.Currency", "Currency")
+                        .WithMany()
+                        .HasForeignKey("CurrencyId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Currency");
+                });
+
             modelBuilder.Entity("DaDoIS.Data.Entities.DepositContract", b =>
                 {
                     b.HasOne("DaDoIS.Data.Entities.Client", "Client")
@@ -371,14 +402,12 @@ namespace DaDoIS.Data.Migrations
                     b.HasOne("DaDoIS.Data.Entities.BankAccount", "Source")
                         .WithMany()
                         .HasForeignKey("SourceId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("DaDoIS.Data.Entities.BankAccount", "Target")
                         .WithMany()
                         .HasForeignKey("TargetId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Source");
 
@@ -388,6 +417,11 @@ namespace DaDoIS.Data.Migrations
             modelBuilder.Entity("DaDoIS.Data.Entities.Client", b =>
                 {
                     b.Navigation("DepositContracts");
+                });
+
+            modelBuilder.Entity("DaDoIS.Data.Entities.DepositContract", b =>
+                {
+                    b.Navigation("BankAccounts");
                 });
 #pragma warning restore 612, 618
         }

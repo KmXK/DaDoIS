@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.InteropServices.Marshalling;
 
 namespace DaDoIS.Data.Entities;
 
@@ -14,6 +15,8 @@ public class DepositContract
     public required DateTime DateEnd { get; set; }
     public required bool IsActive { get; set; }
     public required int DaysToEnd { get; set; }
+    public virtual required List<BankAccount> BankAccounts { get; set; }
+
     [Column(TypeName = "money")]
     public required double Amount { get; set; }
 }

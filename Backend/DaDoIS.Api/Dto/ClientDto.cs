@@ -5,7 +5,7 @@ namespace DaDoIS.Api.Dto;
 [GraphQLName("Client")]
 public record ClientDto
 {
-    public Guid Id { get; set; }
+    public required Guid Id { get; set; }
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
     public required string Patronymic { get; set; }

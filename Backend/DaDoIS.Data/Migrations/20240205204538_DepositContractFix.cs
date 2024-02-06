@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DaDoIS.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class Deposits : Migration
+    public partial class DepositContractFix : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -49,22 +49,6 @@ namespace DaDoIS.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Currencies", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Deposits",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Period = table.Column<int>(type: "int", nullable: false),
-                    Interest = table.Column<double>(type: "float", nullable: false),
-                    IsRevocable = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Deposits", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -121,20 +105,22 @@ namespace DaDoIS.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BankAccounts",
+                name: "Deposits",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Debit = table.Column<double>(type: "float", nullable: false),
-                    Credit = table.Column<double>(type: "float", nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Period = table.Column<int>(type: "int", nullable: false),
+                    Interest = table.Column<double>(type: "float", nullable: false),
+                    IsRevocable = table.Column<bool>(type: "bit", nullable: false),
                     CurrencyId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BankAccounts", x => x.Id);
+                    table.PrimaryKey("PK_Deposits", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_BankAccounts_Currencies_CurrencyId",
+                        name: "FK_Deposits_Currencies_CurrencyId",
                         column: x => x.CurrencyId,
                         principalTable: "Currencies",
                         principalColumn: "Id");
@@ -151,6 +137,8 @@ namespace DaDoIS.Data.Migrations
                     DepositId = table.Column<int>(type: "int", nullable: false),
                     DateBegin = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateEnd = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    DaysToEnd = table.Column<int>(type: "int", nullable: false),
                     Amount = table.Column<decimal>(type: "money", nullable: false)
                 },
                 constraints: table =>
@@ -169,12 +157,39 @@ namespace DaDoIS.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "BankAccounts",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Debit = table.Column<double>(type: "float", nullable: false),
+                    Credit = table.Column<double>(type: "float", nullable: false),
+                    AccountType = table.Column<int>(type: "int", nullable: false),
+                    TypeOfAccount = table.Column<int>(type: "int", nullable: false),
+                    CurrencyId = table.Column<int>(type: "int", nullable: false),
+                    DepositContractId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BankAccounts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BankAccounts_Currencies_CurrencyId",
+                        column: x => x.CurrencyId,
+                        principalTable: "Currencies",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BankAccounts_DepositContracts_DepositContractId",
+                        column: x => x.DepositContractId,
+                        principalTable: "DepositContracts",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TransitLogs",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SourceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TargetId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SourceId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    TargetId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Amount = table.Column<double>(type: "float", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -197,6 +212,11 @@ namespace DaDoIS.Data.Migrations
                 name: "IX_BankAccounts_CurrencyId",
                 table: "BankAccounts",
                 column: "CurrencyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BankAccounts_DepositContractId",
+                table: "BankAccounts",
+                column: "DepositContractId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Clients_CitizenshipId",
@@ -224,6 +244,11 @@ namespace DaDoIS.Data.Migrations
                 column: "DepositId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Deposits_CurrencyId",
+                table: "Deposits",
+                column: "CurrencyId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TransitLogs_SourceId",
                 table: "TransitLogs",
                 column: "SourceId");
@@ -238,19 +263,19 @@ namespace DaDoIS.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "DepositContracts");
+                name: "TransitLogs");
 
             migrationBuilder.DropTable(
-                name: "TransitLogs");
+                name: "BankAccounts");
+
+            migrationBuilder.DropTable(
+                name: "DepositContracts");
 
             migrationBuilder.DropTable(
                 name: "Clients");
 
             migrationBuilder.DropTable(
                 name: "Deposits");
-
-            migrationBuilder.DropTable(
-                name: "BankAccounts");
 
             migrationBuilder.DropTable(
                 name: "Cities");

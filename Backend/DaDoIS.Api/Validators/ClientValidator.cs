@@ -45,7 +45,7 @@ public class CreateClientDtoValidator : AbstractValidator<CreateClientDto>
         RuleFor(x => x.DisabilityGroup).IsInEnum();
         RuleFor(x => x.IsRetired);
 
-        RuleFor(x => x.Salary).Must(x => x >= 0);
+        RuleFor(x => x.Salary).Must(x => x is null or >= 0);
         RuleFor(x => x.IsLiableForMilitaryService);
     }
 }
@@ -104,7 +104,7 @@ public class UpdateClientDtoValidator : AbstractValidator<UpdateClientDto>
         RuleFor(x => x.DisabilityGroup).IsInEnum();
         RuleFor(x => x.IsRetired);
 
-        RuleFor(x => x.Salary).Must(x => x >= 0);
+        RuleFor(x => x.Salary).Must(x => x is null or >= 0);
         RuleFor(x => x.IsLiableForMilitaryService);
     }
 }

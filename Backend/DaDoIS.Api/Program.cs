@@ -5,6 +5,7 @@ using DaDoIS.Api.Validators;
 using DaDoIS.Data;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using DaDoIS.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +18,8 @@ builder.Services
     })
     .AddAutoMapper(typeof(Program))
     .AddValidatorsFromAssemblyContaining<CreateClientDtoValidator>()
-    .AddTransient<DataSeed>();
+    .AddTransient<DataSeed>()
+    .AddTransient<BankService>();
 
 builder.Services
     .AddGraphQLServer()
