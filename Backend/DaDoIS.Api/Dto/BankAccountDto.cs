@@ -12,4 +12,5 @@ public record BankAccountDto
     public required TypeOfAccount TypeOfAccount { get; set; }
     public required CurrencyDto Currency { get; set; }
     public DepositContractDto? DepositContract { get; set; }
+    public required double Amount { get; set; }
 }

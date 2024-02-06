@@ -65,8 +65,6 @@ public class BankService(AppDbContext db)
     public void CloseDepositContract(int contractId)
     {
         var contract = db.DepositContracts.Find(contractId) ?? throw new NotFoundException("DepositContract");
-        contract.IsActive = false;
-        db.SaveChanges();
 
         var money = contract.Amount * contract.Deposit.Currency.ExchangeRate;
         var cashAccount = db.BankAccounts.First(x => x.TypeOfAccount == TypeOfAccount.Cash);
@@ -89,12 +87,15 @@ public class BankService(AppDbContext db)
             TransferMoney(money, depositAccount, cashAccount);
             TransferMoney(money, cashAccount, null);
         }
+
+        contract.IsActive = false;
+        db.SaveChanges();
     }
 
     public void TransferPercents(DepositContract contract, int days)
     {
         var money = contract.Amount * contract.Deposit.Currency.ExchangeRate;
-        var percentMoney = contract.Deposit.Interest / 12.0 * (days / 30);
+        var percentMoney = contract.Deposit.Interest / 12.0 * (days / 30) * money;
 
         var cashAccount = db.BankAccounts.First(x => x.TypeOfAccount == TypeOfAccount.Cash);
         var mainAccount = db.BankAccounts.First(x => x.TypeOfAccount == TypeOfAccount.Main);
@@ -167,15 +168,20 @@ public class BankService(AppDbContext db)
     {
         await db.DepositContracts
             .Where(c => c.IsActive)
-            .ForEachAsync(c => c.DaysToEnd = -1);
+            .ForEachAsync(c => c.DaysToEnd--);
+        await db.SaveChangesAsync();
 
-        await db.DepositContracts
-            .Where(c => c.Deposit.IsRevocable)
-            .Where(c => c.DaysToEnd % 30 == 0)
-            .ForEachAsync(c => TransferPercents(c, 30));
+        var depositContracts = await db.DepositContracts
+            .Where(c => c.Deposit.IsRevocable && 
+                        c.DaysToEnd != c.Deposit.Period && 
+                        c.DaysToEnd % 30 == 0).ToListAsync();
+        foreach (var contract in depositContracts)
+            TransferPercents(contract, 30);
 
-        await db.DepositContracts
-            .Where(c => c.DaysToEnd == 0)
-            .ForEachAsync(c => CloseDepositContract(c.Id));
+        depositContracts = await db.DepositContracts
+            .Where(c => c.DaysToEnd == 0).ToListAsync();
+        foreach (var contract in depositContracts)
+            CloseDepositContract(contract.Id);
+
     }
 }

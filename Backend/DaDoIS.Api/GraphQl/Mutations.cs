@@ -5,7 +5,6 @@ using DaDoIS.Data;
 using DaDoIS.Data.Entities;
 using FluentValidation;
 using DaDoIS.Api.Services;
-using System.ComponentModel.DataAnnotations;
 
 namespace DaDoIS.Api.GraphQl;
 
@@ -72,13 +71,15 @@ public class Mutations
         return mapper.Map<DepositContractDto>(deposit);
     }
 
-    public void CloseDepositContract(int id, [Service] BankService service)
+    public bool CloseDepositContract(int id, [Service] BankService service)
     {
         service.CloseDepositContract(id);
+        return true;
     }
 
-    public async Task CloseBankDay(int days, [Service] BankService service)
+    public async Task<bool> CloseBankDay(int days, [Service] BankService service)
     {
         await service.CloseBankDay(days);
+        return true;
     }
 }
