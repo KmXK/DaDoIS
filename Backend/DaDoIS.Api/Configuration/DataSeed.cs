@@ -121,7 +121,7 @@ public class DataSeed(AppDbContext db, IMapper mapper)
                 new List<Deposit>(){
                     new() {
                         Name = "Online-стратегия",
-                        Interest = 10,
+                        Interest = 0.10,
                         Period = 90,
                         IsRevocable = true,
                         Currency = db.Currencies.Find(1)!,
@@ -129,8 +129,8 @@ public class DataSeed(AppDbContext db, IMapper mapper)
                     },
                     new() {
                         Name = "Online-решение new",
-                        Interest = 13.5,
-                        Period = 9 * 30,
+                        Interest = 0.135,
+                        Period = 30,
                         IsRevocable = false,
                         Currency = db.Currencies.Find(1)!,
                         CurrencyId = 1

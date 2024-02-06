@@ -30,7 +30,7 @@ public class ErrorFilter : IErrorFilter
                 .RemoveLocations()
                 .RemovePath()
                 .WithMessage(nex.ToString()),
-            _ => error,
+            _ => error.WithException(error.Exception),
         };
     }
 }
