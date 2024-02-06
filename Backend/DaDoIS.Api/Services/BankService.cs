@@ -1,17 +1,17 @@
 using DaDoIS.Api.Dto;
+using DaDoIS.Api.Exceptions;
 using DaDoIS.Data;
 using DaDoIS.Data.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace DaDoIS.Api.Services;
 
 public class BankService(AppDbContext db)
 {
-    public DepositContract? CreateDepositContract(CreateDepositContractDto dto)
+    public DepositContract CreateDepositContract(CreateDepositContractDto dto)
     {
         var client = db.Clients.Find(dto.ClientId);
         var deposit = db.Deposits.Find(dto.DepositId);
-
-        if (client is null || deposit is null) return null;
 
         var depositAccount = db.BankAccounts.Add(new()
         {
@@ -19,8 +19,8 @@ public class BankService(AppDbContext db)
             Credit = 0,
             AccountType = AccountType.Passive,
             TypeOfAccount = TypeOfAccount.Deposit,
-            Currency = deposit.Currency,
-            CurrencyId = deposit.CurrencyId,
+            Currency = deposit!.Currency,
+            CurrencyId = deposit!.CurrencyId,
         }).Entity;
         db.SaveChanges();
 
@@ -30,15 +30,15 @@ public class BankService(AppDbContext db)
             Credit = 0,
             AccountType = AccountType.Passive,
             TypeOfAccount = TypeOfAccount.Percent,
-            Currency = deposit.Currency,
-            CurrencyId = deposit.CurrencyId,
+            Currency = deposit!.Currency,
+            CurrencyId = deposit!.CurrencyId,
         }).Entity;
         db.SaveChanges();
 
         var depositContract = db.DepositContracts.Add(new()
         {
             Number = dto.Number,
-            Client = client,
+            Client = client!,
             ClientId = dto.ClientId,
             Deposit = deposit,
             DepositId = dto.DepositId,
@@ -60,6 +60,50 @@ public class BankService(AppDbContext db)
         TransferMoney(money, depositAccount, main);
 
         return depositContract;
+    }
+
+    public void CloseDepositContract(int contractId)
+    {
+        var contract = db.DepositContracts.Find(contractId) ?? throw new NotFoundException("DepositContract");
+        contract.IsActive = false;
+        db.SaveChanges();
+
+        var money = contract.Amount * contract.Deposit.Currency.ExchangeRate;
+        var cashAccount = db.BankAccounts.First(x => x.TypeOfAccount == TypeOfAccount.Cash);
+        var mainAccount = db.BankAccounts.First(x => x.TypeOfAccount == TypeOfAccount.Main);
+
+        var depositAccount = contract.BankAccounts.First(x => x.TypeOfAccount == TypeOfAccount.Deposit);
+        var percentAccount = contract.BankAccounts.First(x => x.TypeOfAccount == TypeOfAccount.Percent);
+
+        if (contract.Deposit.IsRevocable)
+        {
+            TransferMoney(money, mainAccount, depositAccount);
+            TransferMoney(money, depositAccount, cashAccount);
+            TransferMoney(money, cashAccount, null);
+        }
+        else
+        {
+            TransferPercents(contract, contract.Deposit.Period);
+
+            TransferMoney(money, mainAccount, depositAccount);
+            TransferMoney(money, depositAccount, cashAccount);
+            TransferMoney(money, cashAccount, null);
+        }
+    }
+
+    public void TransferPercents(DepositContract contract, int days)
+    {
+        var money = contract.Amount * contract.Deposit.Currency.ExchangeRate;
+        var percentMoney = contract.Deposit.Interest / 12.0 * (days / 30);
+
+        var cashAccount = db.BankAccounts.First(x => x.TypeOfAccount == TypeOfAccount.Cash);
+        var mainAccount = db.BankAccounts.First(x => x.TypeOfAccount == TypeOfAccount.Main);
+        var depositAccount = contract.BankAccounts.First(x => x.TypeOfAccount == TypeOfAccount.Deposit);
+        var percentAccount = contract.BankAccounts.First(x => x.TypeOfAccount == TypeOfAccount.Percent);
+
+        TransferMoney(percentMoney, mainAccount, percentAccount);
+        TransferMoney(percentMoney, percentAccount, cashAccount);
+        TransferMoney(percentMoney, cashAccount, null);
     }
 
     public void AddToAccount(BankAccount? account, double money)
@@ -114,13 +158,24 @@ public class BankService(AppDbContext db)
         db.SaveChanges();
     }
 
-    public void CloseBankDay(int daysCount)
+    public async Task CloseBankDay(int daysCount)
     {
-        for (int i = 0; i < daysCount; i++) CloseBankDay();
+        for (int i = 0; i < daysCount; i++) await CloseBankDay();
     }
 
-    public void CloseBankDay()
+    public async Task CloseBankDay()
     {
-        throw new NotImplementedException();
+        await db.DepositContracts
+            .Where(c => c.IsActive)
+            .ForEachAsync(c => c.DaysToEnd = -1);
+
+        await db.DepositContracts
+            .Where(c => c.Deposit.IsRevocable)
+            .Where(c => c.DaysToEnd % 30 == 0)
+            .ForEachAsync(c => TransferPercents(c, 30));
+
+        await db.DepositContracts
+            .Where(c => c.DaysToEnd == 0)
+            .ForEachAsync(c => CloseDepositContract(c.Id));
     }
 }

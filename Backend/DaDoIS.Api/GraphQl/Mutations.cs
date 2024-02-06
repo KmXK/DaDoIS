@@ -4,6 +4,8 @@ using DaDoIS.Api.Dto;
 using DaDoIS.Data;
 using DaDoIS.Data.Entities;
 using FluentValidation;
+using DaDoIS.Api.Services;
+using System.ComponentModel.DataAnnotations;
 
 namespace DaDoIS.Api.GraphQl;
 
@@ -59,4 +61,24 @@ public class Mutations
         return true;
     }
 
+    public DepositContractDto CreateDepositContract(
+        [GraphQLName("depositContract")] CreateDepositContractDto dto,
+        [Service] IValidator<CreateDepositContractDto> validator,
+        [Service] IMapper mapper,
+        [Service] BankService service)
+    {
+        validator.ValidateAndThrow(dto);
+        var deposit = service.CreateDepositContract(dto);
+        return mapper.Map<DepositContractDto>(deposit);
+    }
+
+    public void CloseDepositContract(int id, [Service] BankService service)
+    {
+        service.CloseDepositContract(id);
+    }
+
+    public async Task CloseBankDay(int days, [Service] BankService service)
+    {
+        await service.CloseBankDay(days);
+    }
 }
