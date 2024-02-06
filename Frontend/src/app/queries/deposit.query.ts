@@ -23,3 +23,35 @@ export const CREATE_DEPOSIT_PLAN = gql`
         }
     }
 `;
+
+export const GET_ACTIVE_DEPOSITS = gql`
+    query getActiveDeposits {
+        depositContracts(where: { isActive: { eq: true } }) {
+            id
+            deposit {
+                id
+                name
+                currency {
+                    id
+                    name
+                }
+            }
+            amount
+            number
+            client {
+                id
+                firstName
+                lastName
+                patronymic
+            }
+        }
+    }
+`;
+
+export const CREATE_DEPOSIT = gql`
+    mutation createDEPOSIT($deposit: CreateDepositContractInput!) {
+        createDepositContract(depositContract: $deposit) {
+            id
+        }
+    }
+`;

@@ -51,6 +51,7 @@ export type AccountTypeOperationFilterInput = {
 export type BankAccount = {
     __typename?: 'BankAccount';
     accountType: AccountType;
+    amount: Scalars['Float']['output'];
     credit: Scalars['Float']['output'];
     currency: Currency;
     debit: Scalars['Float']['output'];
@@ -61,6 +62,7 @@ export type BankAccount = {
 
 export type BankAccountFilterInput = {
     accountType?: InputMaybe<AccountTypeOperationFilterInput>;
+    amount?: InputMaybe<FloatOperationFilterInput>;
     and?: InputMaybe<Array<BankAccountFilterInput>>;
     credit?: InputMaybe<FloatOperationFilterInput>;
     currency?: InputMaybe<CurrencyFilterInput>;
@@ -73,6 +75,7 @@ export type BankAccountFilterInput = {
 
 export type BankAccountSortInput = {
     accountType?: InputMaybe<SortEnumType>;
+    amount?: InputMaybe<SortEnumType>;
     credit?: InputMaybe<SortEnumType>;
     currency?: InputMaybe<CurrencySortInput>;
     debit?: InputMaybe<SortEnumType>;
@@ -244,6 +247,13 @@ export type CreateClientInput = {
     registrationCityId: Scalars['Int']['input'];
     salary?: InputMaybe<Scalars['Float']['input']>;
     workPlace?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type CreateDepositContractInput = {
+    amount: Scalars['Float']['input'];
+    clientId: Scalars['UUID']['input'];
+    depositId: Scalars['Int']['input'];
+    number: Scalars['String']['input'];
 };
 
 export type CreateDepositInput = {
@@ -445,11 +455,22 @@ export type MaritalStatusOperationFilterInput = {
 
 export type Mutations = {
     __typename?: 'Mutations';
+    closeBankDay: Scalars['Boolean']['output'];
+    closeDepositContract: Scalars['Boolean']['output'];
     createClient: Client;
     createDeposit: Deposit;
+    createDepositContract: DepositContract;
     deleteClient: Scalars['Boolean']['output'];
     deleteDeposit: Scalars['Boolean']['output'];
     putClient?: Maybe<Client>;
+};
+
+export type MutationsCloseBankDayArgs = {
+    days: Scalars['Int']['input'];
+};
+
+export type MutationsCloseDepositContractArgs = {
+    id: Scalars['Int']['input'];
 };
 
 export type MutationsCreateClientArgs = {
@@ -458,6 +479,10 @@ export type MutationsCreateClientArgs = {
 
 export type MutationsCreateDepositArgs = {
     deposit: CreateDepositInput;
+};
+
+export type MutationsCreateDepositContractArgs = {
+    depositContract: CreateDepositContractInput;
 };
 
 export type MutationsDeleteClientArgs = {
@@ -725,12 +750,46 @@ export type GetDepositPlansQuery = {
 };
 
 export type CreateDepositPlanMutationVariables = Exact<{
-    input: CreateDepositInput;
+    deposit: CreateDepositInput;
 }>;
 
 export type CreateDepositPlanMutation = {
     __typename?: 'Mutations';
     createDeposit: { __typename?: 'Deposit'; id: number };
+};
+
+export type GetActiveDepositsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetActiveDepositsQuery = {
+    __typename?: 'Queries';
+    depositContracts: Array<{
+        __typename?: 'DepositContract';
+        id: number;
+        amount: number;
+        number: string;
+        deposit: {
+            __typename?: 'Deposit';
+            id: number;
+            name: string;
+            currency: { __typename?: 'Currency'; id: number; name: string };
+        };
+        client: {
+            __typename?: 'Client';
+            id: any;
+            firstName: string;
+            lastName: string;
+            patronymic: string;
+        };
+    }>;
+};
+
+export type CreateDepositMutationVariables = Exact<{
+    deposit: CreateDepositContractInput;
+}>;
+
+export type CreateDepositMutation = {
+    __typename?: 'Mutations';
+    createDepositContract: { __typename?: 'DepositContract'; id: number };
 };
 
 export interface PossibleTypesResultData {
@@ -937,8 +996,8 @@ export class GetDepositPlansGQL extends Apollo.Query<
     }
 }
 export const CreateDepositPlanDocument = gql`
-    mutation createDepositPlan($input: CreateDepositInput!) {
-        createDeposit(deposit: $input) {
+    mutation createDepositPlan($deposit: CreateDepositInput!) {
+        createDeposit(deposit: $deposit) {
             id
         }
     }
@@ -952,6 +1011,64 @@ export class CreateDepositPlanGQL extends Apollo.Mutation<
     CreateDepositPlanMutationVariables
 > {
     override document = CreateDepositPlanDocument;
+
+    constructor(apollo: Apollo.Apollo) {
+        super(apollo);
+    }
+}
+export const GetActiveDepositsDocument = gql`
+    query getActiveDeposits {
+        depositContracts(where: { isActive: { eq: true } }) {
+            id
+            deposit {
+                id
+                name
+                currency {
+                    id
+                    name
+                }
+            }
+            amount
+            number
+            client {
+                id
+                firstName
+                lastName
+                patronymic
+            }
+        }
+    }
+`;
+
+@Injectable({
+    providedIn: 'root'
+})
+export class GetActiveDepositsGQL extends Apollo.Query<
+    GetActiveDepositsQuery,
+    GetActiveDepositsQueryVariables
+> {
+    override document = GetActiveDepositsDocument;
+
+    constructor(apollo: Apollo.Apollo) {
+        super(apollo);
+    }
+}
+export const CreateDepositDocument = gql`
+    mutation createDEPOSIT($deposit: CreateDepositContractInput!) {
+        createDepositContract(depositContract: $deposit) {
+            id
+        }
+    }
+`;
+
+@Injectable({
+    providedIn: 'root'
+})
+export class CreateDepositGQL extends Apollo.Mutation<
+    CreateDepositMutation,
+    CreateDepositMutationVariables
+> {
+    override document = CreateDepositDocument;
 
     constructor(apollo: Apollo.Apollo) {
         super(apollo);

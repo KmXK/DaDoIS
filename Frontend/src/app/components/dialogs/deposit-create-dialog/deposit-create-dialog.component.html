@@ -1,0 +1,50 @@
+<h1 mat-dialog-title>Оформление депозита</h1>
+<div mat-dialog-content>
+    <form [formGroup]="form">
+        <mat-form-field>
+            <mat-label>Номер договора</mat-label>
+            <input matInput formControlName="number" />
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>План</mat-label>
+            <mat-select formControlName="plan">
+                @for (plan of plans(); track plan.id) {
+                    <mat-option [value]="plan">
+                        {{ plan.name }}
+                    </mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Клиент</mat-label>
+            <mat-select formControlName="clientId">
+                @for (client of clients(); track client.id) {
+                    <mat-option [value]="client.id">
+                        {{ client.lastName }} {{ client.firstName }}
+                        {{ client.patronymic }}
+                        {{ client.identificationNumber }}
+                    </mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Сумма</mat-label>
+            <input matInput type="number" formControlName="amount" />
+            @if (form.controls.plan.value) {
+                <mat-hint>
+                    Валюта: {{ form.controls.plan.value!.currency!.name ?? '' }}
+                </mat-hint>
+            }
+        </mat-form-field>
+    </form>
+</div>
+<div mat-dialog-actions class="buttons-container">
+    <button mat-button (click)="close()">Отмена</button>
+    <button
+        mat-button
+        [disabled]="form.invalid || inProcess()"
+        (click)="create()"
+    >
+        Создать
+    </button>
+</div>

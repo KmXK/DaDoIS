@@ -24,7 +24,7 @@ export class DepositPlanService {
 
     createPlan(deposit: CreateDepositInput) {
         return this._createDepositPlanGQL
-            .mutate({ input: deposit })
+            .mutate({ deposit })
             .pipe(mapMutationResult(data => data?.createDeposit));
     }
 }
