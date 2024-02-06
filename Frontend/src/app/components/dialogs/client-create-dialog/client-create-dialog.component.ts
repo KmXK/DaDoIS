@@ -24,20 +24,20 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Observer } from 'rxjs';
+import { Client, CreateClientInput, GenderType } from '../../../../graphql';
 import {
     DisabilityGroup,
     getDisabilityGroupName
 } from '../../../enums/disability-group.enum';
-import { Gender, getGenderName } from '../../../enums/gender.enum';
+import { getGenderName } from '../../../enums/gender.enum';
 import {
     getMaritalStatusName,
     MaritalStatus
 } from '../../../enums/marital-status.enum';
-import { Client } from '../../../models/client.model';
-import { CreateClientModel } from '../../../models/crud/create-client.model';
 import { CitizenshipService } from '../../../services/citizenship.service';
 import { CityService } from '../../../services/city.service';
 import { ClientService } from '../../../services/client.service';
+import { removeError } from '../../../shared/control.helper';
 import { maxDateFilter } from '../../../shared/date-filters';
 import { getEnumMap } from '../../../shared/enum.helper';
 
@@ -70,7 +70,7 @@ export class ClientCreateDialog implements OnInit {
     public readonly client: Client | undefined = inject(MAT_DIALOG_DATA);
 
     public readonly birthdayFilter = maxDateFilter(new Date());
-    public readonly sexOptions = getEnumMap(Gender, getGenderName);
+    public readonly sexOptions = getEnumMap(GenderType, getGenderName);
     public readonly maritalStatusOptions = getEnumMap(
         MaritalStatus,
         getMaritalStatusName
@@ -103,7 +103,7 @@ export class ClientCreateDialog implements OnInit {
             Validators.required,
             Validators.max(Date.now())
         ]),
-        gender: new FormControl(Gender.Undefined, [Validators.required]),
+        gender: new FormControl(GenderType.Undefined, [Validators.required]),
         passport: new FormControl('', [
             Validators.required,
             Validators.pattern(/^[A-Z]{2}[0-9]{7}$/)
@@ -152,6 +152,17 @@ export class ClientCreateDialog implements OnInit {
     public ngOnInit(): void {
         this.dialogRef.updateSize('600px');
 
+        for (const controlsKey in this.form.controls) {
+            const control: any =
+                this.form.controls[
+                    controlsKey as keyof typeof this.form.controls
+                ];
+
+            control.valueChanges.subscribe(() => {
+                removeError(control, 'serverError');
+            });
+        }
+
         if (this.client === undefined) {
             return;
         }
@@ -182,7 +193,7 @@ export class ClientCreateDialog implements OnInit {
 
         this.inProcess.set(true);
 
-        const client: CreateClientModel = {
+        const client: CreateClientInput = {
             firstName: this.form.value.firstName!,
             lastName: this.form.value.lastName!,
             patronymic: this.form.value.patronymic!,
@@ -212,25 +223,15 @@ export class ClientCreateDialog implements OnInit {
                 this.form.value.isLiableForMilitaryService!
         };
 
-        const obj:
-            | Partial<Observer<CreateClientModel | void>>
-            | ((value: void) => void)
-            | undefined = {
+        const obj: Observer<unknown> = {
             next: () => {
                 this.dialogRef.close();
             },
             error: err => {
-                this.showErrors(
-                    err.error as {
-                        propertyName: string;
-                        errorMessage: string;
-                    }[]
-                );
-                console.log(err);
-            },
-            complete: () => {
+                this.showErrors(err);
                 this.inProcess.set(false);
-            }
+            },
+            complete: () => {}
         };
 
         if (this.client === undefined) {
@@ -243,7 +244,7 @@ export class ClientCreateDialog implements OnInit {
     private showErrors(
         errors: { propertyName: string; errorMessage: string }[]
     ): void {
-        const controlsMap: Record<string, string> = {
+        const controlsMap: Record<string, keyof typeof this.form.controls> = {
             passportSeries: 'passport',
             passportNumber: 'passport',
             citizenshipId: 'citizenship',
@@ -255,13 +256,13 @@ export class ClientCreateDialog implements OnInit {
             const formErrors: Record<string, boolean> = {};
 
             for (const error of errors) {
-                const propertyName =
-                    error.propertyName[0].toLowerCase() +
-                    error.propertyName.slice(1);
+                const propertyName = (error.propertyName[0].toLowerCase() +
+                    error.propertyName.slice(
+                        1
+                    )) as keyof typeof this.form.controls;
 
                 const controlName = controlsMap[propertyName] || propertyName;
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
+
                 this.form.controls[controlName]?.setErrors({
                     serverError: true
                 });
@@ -270,7 +271,6 @@ export class ClientCreateDialog implements OnInit {
 
             this.form.setErrors(formErrors);
             this.form.markAllAsTouched();
-            console.log(this.form);
         }
     }
 }

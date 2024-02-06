@@ -1,17 +1,16 @@
-export enum MaritalStatus {
-    Single = 0,
-    Married = 1,
-    Divorced = 2,
-    Widowed = 3
-}
+import { MaritalStatus } from '../../graphql';
 
-export function getMaritalStatusName(maritalStatus: MaritalStatus): string {
+export function getMaritalStatusName(maritalStatus: MaritalStatus): {
+    text: string;
+    order: number;
+} {
     const map = {
-        [MaritalStatus.Single]: 'Холост/Не замужем',
-        [MaritalStatus.Married]: 'Женат/Замужем',
-        [MaritalStatus.Divorced]: 'Разведён/Разведена',
-        [MaritalStatus.Widowed]: 'Вдовец/Вдова'
+        [MaritalStatus.Single]: { text: 'Холост/Не замужем', order: 0 },
+        [MaritalStatus.Married]: { text: 'Женат/Замужем', order: 1 },
+        [MaritalStatus.Divorced]: { text: 'Разведён/Разведена', order: 2 },
+        [MaritalStatus.Widower]: { text: 'Вдовец/Вдова', order: 3 }
     };
 
     return map[maritalStatus];
 }
+export { MaritalStatus };

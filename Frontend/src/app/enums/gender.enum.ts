@@ -1,16 +1,10 @@
-export enum Gender {
-    Undefined = 0,
-    Male = 1,
-    Female = 2
-}
+import { GenderType } from '../../graphql';
 
-export function getGenderName(gender: Gender): string {
-    console.log(typeof gender);
-
+export function getGenderName(gender: GenderType) {
     const map = {
-        [Gender.Undefined]: 'Неизвестно',
-        [Gender.Male]: 'Мужской',
-        [Gender.Female]: 'Женский'
+        [GenderType.Undefined]: { text: 'Неизвестно', order: 0 },
+        [GenderType.Male]: { text: 'Мужской', order: 1 },
+        [GenderType.Female]: { text: 'Женский', order: 2 }
     };
 
     return map[gender];

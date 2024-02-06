@@ -7,6 +7,7 @@ public class ErrorFilter : IErrorFilter
 {
     public IError OnError(IError error)
     {
+        Console.WriteLine(error.Exception);
         return error.Exception switch
         {
             ValidationException vex => error

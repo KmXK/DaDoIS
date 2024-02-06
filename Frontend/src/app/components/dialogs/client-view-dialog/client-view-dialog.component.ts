@@ -7,10 +7,10 @@ import {
     MatDialogRef
 } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { Client } from '../../../../graphql';
 import { getDisabilityGroupName } from '../../../enums/disability-group.enum';
 import { getGenderName } from '../../../enums/gender.enum';
 import { getMaritalStatusName } from '../../../enums/marital-status.enum';
-import { Client } from '../../../models/client.model';
 
 @Component({
     selector: 'app-client-view-dialog',
@@ -52,7 +52,7 @@ export class ClientViewDialog implements OnInit {
                     'dd.MM.yyyy г.'
                 )!
             ],
-            ['Пол', getGenderName(client.gender)],
+            ['Пол', getGenderName(client.gender).text],
             ['Номер паспорта', client.passportSeries + client.passportNumber],
             [
                 'Дата выдачи',
@@ -73,9 +73,15 @@ export class ClientViewDialog implements OnInit {
             ['Должность', client.position],
             ['Город прописки', client.registrationCity.name],
             ['Адрес прописки', client.registrationAddress],
-            ['Семейное положение', getMaritalStatusName(client.maritalStatus)],
+            [
+                'Семейное положение',
+                getMaritalStatusName(client.maritalStatus).text
+            ],
             ['Гражданство', client.citizenship.name],
-            ['Инвалидность', getDisabilityGroupName(client.disabilityGroup)],
+            [
+                'Инвалидность',
+                getDisabilityGroupName(client.disabilityGroup).text
+            ],
             ['Пенсионер', client.isRetired ? 'Да' : 'Нет'],
             ['Ежемесячный доход', client.salary?.toString()],
             [

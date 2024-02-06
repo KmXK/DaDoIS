@@ -32,24 +32,9 @@
             "style": "kebab-case"
           }
         ],
-        "@typescript-eslint/explicit-member-accessibility": [
-          "error",
-          {
-            "accessibility": "explicit",
-            "overrides": {
-              "accessors": "no-public",
-              "constructors": "no-public"
-            }
-          }
-        ],
-        "@typescript-eslint/explicit-function-return-type": [
-          "error",
-          {
-            "allowExpressions": true
-          }
-        ],
         "@typescript-eslint/no-unused-vars": "off",
-        "@angular-eslint/component-class-suffix": "off"
+        "@angular-eslint/component-class-suffix": "off",
+        "@typescript-eslint/no-explicit-any": "off"
       }
     },
     {

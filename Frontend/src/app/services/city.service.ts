@@ -1,18 +1,17 @@
 import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { City } from '../models/city.model';
-import { ApiService } from './api.service';
+import { City, Get_CitiesGQL } from '../../graphql';
 
 @Injectable({ providedIn: 'root' })
 export class CityService {
-    private readonly apiService = inject(ApiService);
-    private _cities = new BehaviorSubject<City[]>([]);
+    private readonly _citiesGQL = inject(Get_CitiesGQL);
+    private readonly _cities = new BehaviorSubject<City[]>([]);
 
     public readonly cities$ = this._cities.asObservable();
 
     public updateCities(): void {
-        this.apiService.get<City[]>('/api/cities').subscribe(cities => {
-            this._cities.next(cities);
+        this._citiesGQL.fetch().subscribe(result => {
+            this._cities.next(result.data.cities);
         });
     }
 }

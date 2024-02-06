@@ -1,9 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
+import { Client } from '../../graphql';
 import { ClientCreateDialog } from '../components/dialogs/client-create-dialog/client-create-dialog.component';
 import { ClientViewDialog } from '../components/dialogs/client-view-dialog/client-view-dialog.component';
-import { Client } from '../models/client.model';
 
 @Injectable({
     providedIn: 'root'

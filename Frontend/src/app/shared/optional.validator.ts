@@ -14,7 +14,6 @@ export function optionalValidator(
     validators?: Optional<ValidatorFn>[]
 ): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-        console.log(control.value);
         if (hasValue(control.value) && validators) {
             return Validators.compose(validators)?.(control) ?? null;
         }
