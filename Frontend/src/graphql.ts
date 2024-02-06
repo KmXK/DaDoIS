@@ -38,8 +38,6 @@ export type Scalars = {
 
 export enum AccountType {
     Active = 'ACTIVE',
-    Cash = 'CASH',
-    Main = 'MAIN',
     Passive = 'PASSIVE'
 }
 
@@ -52,29 +50,35 @@ export type AccountTypeOperationFilterInput = {
 
 export type BankAccount = {
     __typename?: 'BankAccount';
+    accountType: AccountType;
     credit: Scalars['Float']['output'];
     currency: Currency;
     debit: Scalars['Float']['output'];
+    depositContract?: Maybe<DepositContract>;
     id: Scalars['UUID']['output'];
-    type: AccountType;
+    typeOfAccount: TypeOfAccount;
 };
 
 export type BankAccountFilterInput = {
+    accountType?: InputMaybe<AccountTypeOperationFilterInput>;
     and?: InputMaybe<Array<BankAccountFilterInput>>;
     credit?: InputMaybe<FloatOperationFilterInput>;
     currency?: InputMaybe<CurrencyFilterInput>;
     debit?: InputMaybe<FloatOperationFilterInput>;
+    depositContract?: InputMaybe<DepositContractFilterInput>;
     id?: InputMaybe<UuidOperationFilterInput>;
     or?: InputMaybe<Array<BankAccountFilterInput>>;
-    type?: InputMaybe<AccountTypeOperationFilterInput>;
+    typeOfAccount?: InputMaybe<TypeOfAccountOperationFilterInput>;
 };
 
 export type BankAccountSortInput = {
+    accountType?: InputMaybe<SortEnumType>;
     credit?: InputMaybe<SortEnumType>;
     currency?: InputMaybe<CurrencySortInput>;
     debit?: InputMaybe<SortEnumType>;
+    depositContract?: InputMaybe<DepositContractSortInput>;
     id?: InputMaybe<SortEnumType>;
-    type?: InputMaybe<SortEnumType>;
+    typeOfAccount?: InputMaybe<SortEnumType>;
 };
 
 export type BooleanOperationFilterInput = {
@@ -243,6 +247,7 @@ export type CreateClientInput = {
 };
 
 export type CreateDepositInput = {
+    currencyId: Scalars['Int']['input'];
     interest: Scalars['Float']['input'];
     isRevocable: Scalars['Boolean']['input'];
     name: Scalars['String']['input'];
@@ -284,6 +289,7 @@ export type DateTimeOperationFilterInput = {
 
 export type Deposit = {
     __typename?: 'Deposit';
+    currency: Currency;
     id: Scalars['Int']['output'];
     interest: Scalars['Float']['output'];
     isRevocable: Scalars['Boolean']['output'];
@@ -294,6 +300,7 @@ export type Deposit = {
 export type DepositContract = {
     __typename?: 'DepositContract';
     amount: Scalars['Float']['output'];
+    bankAccounts: Array<BankAccount>;
     client: Client;
     dateBegin: Scalars['DateTime']['output'];
     dateEnd: Scalars['DateTime']['output'];
@@ -307,6 +314,7 @@ export type DepositContract = {
 export type DepositContractFilterInput = {
     amount?: InputMaybe<FloatOperationFilterInput>;
     and?: InputMaybe<Array<DepositContractFilterInput>>;
+    bankAccounts?: InputMaybe<ListFilterInputTypeOfBankAccountFilterInput>;
     client?: InputMaybe<ClientFilterInput>;
     dateBegin?: InputMaybe<DateTimeOperationFilterInput>;
     dateEnd?: InputMaybe<DateTimeOperationFilterInput>;
@@ -332,6 +340,7 @@ export type DepositContractSortInput = {
 
 export type DepositFilterInput = {
     and?: InputMaybe<Array<DepositFilterInput>>;
+    currency?: InputMaybe<CurrencyFilterInput>;
     id?: InputMaybe<IntOperationFilterInput>;
     interest?: InputMaybe<FloatOperationFilterInput>;
     isRevocable?: InputMaybe<BooleanOperationFilterInput>;
@@ -341,6 +350,7 @@ export type DepositFilterInput = {
 };
 
 export type DepositSortInput = {
+    currency?: InputMaybe<CurrencySortInput>;
     id?: InputMaybe<SortEnumType>;
     interest?: InputMaybe<SortEnumType>;
     isRevocable?: InputMaybe<SortEnumType>;
@@ -403,6 +413,13 @@ export type IntOperationFilterInput = {
     nin?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
     nlt?: InputMaybe<Scalars['Int']['input']>;
     nlte?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type ListFilterInputTypeOfBankAccountFilterInput = {
+    all?: InputMaybe<BankAccountFilterInput>;
+    any?: InputMaybe<Scalars['Boolean']['input']>;
+    none?: InputMaybe<BankAccountFilterInput>;
+    some?: InputMaybe<BankAccountFilterInput>;
 };
 
 export type ListFilterInputTypeOfDepositContractFilterInput = {
@@ -532,8 +549,8 @@ export type TransitLog = {
     amount: Scalars['Float']['output'];
     date: Scalars['DateTime']['output'];
     id: Scalars['UUID']['output'];
-    source: BankAccount;
-    target: BankAccount;
+    source?: Maybe<BankAccount>;
+    target?: Maybe<BankAccount>;
 };
 
 export type TransitLogFilterInput = {
@@ -552,6 +569,20 @@ export type TransitLogSortInput = {
     id?: InputMaybe<SortEnumType>;
     source?: InputMaybe<BankAccountSortInput>;
     target?: InputMaybe<BankAccountSortInput>;
+};
+
+export enum TypeOfAccount {
+    Cash = 'CASH',
+    Deposit = 'DEPOSIT',
+    Main = 'MAIN',
+    Percent = 'PERCENT'
+}
+
+export type TypeOfAccountOperationFilterInput = {
+    eq?: InputMaybe<TypeOfAccount>;
+    in?: InputMaybe<Array<TypeOfAccount>>;
+    neq?: InputMaybe<TypeOfAccount>;
+    nin?: InputMaybe<Array<TypeOfAccount>>;
 };
 
 export type UpdateClientInput = {
@@ -669,6 +700,37 @@ export type PutClientMutationVariables = Exact<{
 export type PutClientMutation = {
     __typename?: 'Mutations';
     putClient?: { __typename?: 'Client'; id: any } | null;
+};
+
+export type GetCurrenciesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetCurrenciesQuery = {
+    __typename?: 'Queries';
+    currencies: Array<{ __typename?: 'Currency'; id: number; name: string }>;
+};
+
+export type GetDepositPlansQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetDepositPlansQuery = {
+    __typename?: 'Queries';
+    deposits: Array<{
+        __typename?: 'Deposit';
+        id: number;
+        name: string;
+        interest: number;
+        isRevocable: boolean;
+        period: number;
+        currency: { __typename?: 'Currency'; id: number; name: string };
+    }>;
+};
+
+export type CreateDepositPlanMutationVariables = Exact<{
+    input: CreateDepositInput;
+}>;
+
+export type CreateDepositPlanMutation = {
+    __typename?: 'Mutations';
+    createDeposit: { __typename?: 'Deposit'; id: number };
 };
 
 export interface PossibleTypesResultData {
@@ -818,6 +880,78 @@ export class PutClientGQL extends Apollo.Mutation<
     PutClientMutationVariables
 > {
     override document = PutClientDocument;
+
+    constructor(apollo: Apollo.Apollo) {
+        super(apollo);
+    }
+}
+export const GetCurrenciesDocument = gql`
+    query getCurrencies {
+        currencies {
+            id
+            name
+        }
+    }
+`;
+
+@Injectable({
+    providedIn: 'root'
+})
+export class GetCurrenciesGQL extends Apollo.Query<
+    GetCurrenciesQuery,
+    GetCurrenciesQueryVariables
+> {
+    override document = GetCurrenciesDocument;
+
+    constructor(apollo: Apollo.Apollo) {
+        super(apollo);
+    }
+}
+export const GetDepositPlansDocument = gql`
+    query getDepositPlans {
+        deposits {
+            id
+            name
+            currency {
+                id
+                name
+            }
+            interest
+            isRevocable
+            period
+        }
+    }
+`;
+
+@Injectable({
+    providedIn: 'root'
+})
+export class GetDepositPlansGQL extends Apollo.Query<
+    GetDepositPlansQuery,
+    GetDepositPlansQueryVariables
+> {
+    override document = GetDepositPlansDocument;
+
+    constructor(apollo: Apollo.Apollo) {
+        super(apollo);
+    }
+}
+export const CreateDepositPlanDocument = gql`
+    mutation createDepositPlan($input: CreateDepositInput!) {
+        createDeposit(deposit: $input) {
+            id
+        }
+    }
+`;
+
+@Injectable({
+    providedIn: 'root'
+})
+export class CreateDepositPlanGQL extends Apollo.Mutation<
+    CreateDepositPlanMutation,
+    CreateDepositPlanMutationVariables
+> {
+    override document = CreateDepositPlanDocument;
 
     constructor(apollo: Apollo.Apollo) {
         super(apollo);

@@ -1,5 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { MatCard } from '@angular/material/card';
+import { RouterOutlet } from '@angular/router';
 import { ClientListComponent } from './components/client-list/client-list.component';
 import { CitizenshipService } from './services/citizenship.service';
 import { CityService } from './services/city.service';
@@ -10,7 +11,7 @@ import { ClientService } from './services/client.service';
     standalone: true,
     templateUrl: 'app.component.html',
     styles: [],
-    imports: [ClientListComponent, MatCard]
+    imports: [ClientListComponent, MatCard, RouterOutlet]
 })
 export class AppComponent implements OnInit {
     private readonly clientService = inject(ClientService);

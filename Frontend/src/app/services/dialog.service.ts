@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Client } from '../../graphql';
 import { ClientCreateDialog } from '../components/dialogs/client-create-dialog/client-create-dialog.component';
 import { ClientViewDialog } from '../components/dialogs/client-view-dialog/client-view-dialog.component';
+import { DepositPlanCreateDialog } from '../components/dialogs/dialog-plan-create-dialog/deposit-plan-create-dialog.component';
 
 @Injectable({
     providedIn: 'root'
@@ -24,6 +25,11 @@ export class DialogService {
             data: client
         });
 
+        return dialog.afterOpened();
+    }
+
+    public openCreateDepositPlanDialog(): Observable<void> {
+        const dialog = this.matDialog.open(DepositPlanCreateDialog);
         return dialog.afterOpened();
     }
 }

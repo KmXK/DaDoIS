@@ -12,7 +12,7 @@ import { DialogService } from '../../services/dialog.service';
     standalone: true,
     selector: 'app-client-list',
     templateUrl: './client-list.component.html',
-    styleUrl: './client-list.component.css',
+    styleUrl: './client-list.component.scss',
     imports: [AsyncPipe, MatTableModule, MatSortHeader, MatSort, MatButton]
 })
 export class ClientListComponent {
