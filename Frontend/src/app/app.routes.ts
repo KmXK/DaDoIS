@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { AccountListComponent } from './components/account-list/account-list.component';
 import { ClientListComponent } from './components/client-list/client-list.component';
 import { DepositListComponent } from './components/deposit-list/deposit-list.component';
 import { DepositPlanListComponent } from './components/deposit-plan-list/deposit-plan-list.component';
@@ -15,6 +16,10 @@ export const routes: Routes = [
     {
         path: 'deposits',
         component: DepositListComponent
+    },
+    {
+        path: 'accounts',
+        component: AccountListComponent
     },
     {
         path: '*',

@@ -1,0 +1,61 @@
+<div class="container">
+    <div class="container-head">
+        <h2>Счета</h2>
+    </div>
+
+    <table [dataSource]="deposits" mat-table>
+        <ng-container matColumnDef="iban">
+            <th *matHeaderCellDef mat-header-cell>IBAN</th>
+            <td *matCellDef="let element" mat-cell>{{ element.ibanNumber }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="accountType">
+            <th *matHeaderCellDef mat-header-cell>Тип</th>
+            <td *matCellDef="let element" mat-cell>
+                {{
+                    element.accountType === AccountType.Active
+                        ? 'Активный'
+                        : 'Пассивный'
+                }}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="debit">
+            <th *matHeaderCellDef mat-header-cell>Дебит</th>
+            <td *matCellDef="let element" mat-cell>
+                {{ element.debit }} {{ element.currency.name }}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="credit">
+            <th *matHeaderCellDef mat-header-cell>Кредит</th>
+            <td *matCellDef="let element" mat-cell>
+                {{ element.credit }} {{ element.currency.name }}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="amount">
+            <th *matHeaderCellDef mat-header-cell>Сальдо</th>
+            <td *matCellDef="let element" mat-cell>
+                {{ element.amount }} {{ element.currency.name }}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="contractNumber">
+            <th *matHeaderCellDef>Номер договора</th>
+            <td *matCellDef="let element" mat-cell>
+                @if (element.depositContract) {
+                    {{ element.depositContract.number }}
+                }
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+            mat-row
+            *matRowDef="let element; columns: displayedColumns"
+            [class.main-account]="element.typeOfAccount === 'MAIN'"
+            [class.cash-account]="element.typeOfAccount === 'CASH'"
+        ></tr>
+    </table>
+</div>

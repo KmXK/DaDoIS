@@ -56,6 +56,7 @@ export type BankAccount = {
     currency: Currency;
     debit: Scalars['Float']['output'];
     depositContract?: Maybe<DepositContract>;
+    ibanNumber: Scalars['String']['output'];
     id: Scalars['UUID']['output'];
     typeOfAccount: TypeOfAccount;
 };
@@ -68,6 +69,7 @@ export type BankAccountFilterInput = {
     currency?: InputMaybe<CurrencyFilterInput>;
     debit?: InputMaybe<FloatOperationFilterInput>;
     depositContract?: InputMaybe<DepositContractFilterInput>;
+    ibanNumber?: InputMaybe<StringOperationFilterInput>;
     id?: InputMaybe<UuidOperationFilterInput>;
     or?: InputMaybe<Array<BankAccountFilterInput>>;
     typeOfAccount?: InputMaybe<TypeOfAccountOperationFilterInput>;
@@ -80,6 +82,7 @@ export type BankAccountSortInput = {
     currency?: InputMaybe<CurrencySortInput>;
     debit?: InputMaybe<SortEnumType>;
     depositContract?: InputMaybe<DepositContractSortInput>;
+    ibanNumber?: InputMaybe<SortEnumType>;
     id?: InputMaybe<SortEnumType>;
     typeOfAccount?: InputMaybe<SortEnumType>;
 };
@@ -655,6 +658,27 @@ export type UuidOperationFilterInput = {
     nlte?: InputMaybe<Scalars['UUID']['input']>;
 };
 
+export type GetAccountsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetAccountsQuery = {
+    __typename?: 'Queries';
+    bankAccounts: Array<{
+        __typename?: 'BankAccount';
+        id: any;
+        amount: number;
+        accountType: AccountType;
+        typeOfAccount: TypeOfAccount;
+        ibanNumber: string;
+        debit: number;
+        credit: number;
+        currency: { __typename?: 'Currency'; id: number; name: string };
+        depositContract?: {
+            __typename?: 'DepositContract';
+            number: string;
+        } | null;
+    }>;
+};
+
 export type Get_CitizenshipQueryVariables = Exact<{ [key: string]: never }>;
 
 export type Get_CitizenshipQuery = {
@@ -802,6 +826,40 @@ const result: PossibleTypesResultData = {
 };
 export default result;
 
+export const GetAccountsDocument = gql`
+    query getAccounts {
+        bankAccounts {
+            id
+            amount
+            accountType
+            typeOfAccount
+            ibanNumber
+            debit
+            credit
+            currency {
+                id
+                name
+            }
+            depositContract {
+                number
+            }
+        }
+    }
+`;
+
+@Injectable({
+    providedIn: 'root'
+})
+export class GetAccountsGQL extends Apollo.Query<
+    GetAccountsQuery,
+    GetAccountsQueryVariables
+> {
+    override document = GetAccountsDocument;
+
+    constructor(apollo: Apollo.Apollo) {
+        super(apollo);
+    }
+}
 export const Get_CitizenshipDocument = gql`
     query GET_CITIZENSHIP {
         citizenship {
