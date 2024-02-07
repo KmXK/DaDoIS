@@ -16,4 +16,25 @@ public class BankAccount
     public int? DepositContractId { get; set; }
     [NotMapped]
     public double Amount { get => AccountType == AccountType.Active ? Debit - Credit : Credit - Debit; }
+    [NotMapped]
+    public string IBANNumber
+    {
+        get
+        {
+            return $"BY42BGBG{GetTypeAccountCode()}00000000{Id.ToString().ToUpper()[..8]}";
+        }
+    }
+
+    public string GetTypeAccountCode()
+    {
+        return TypeOfAccount switch
+        {
+            TypeOfAccount.Main => "7327",
+            TypeOfAccount.Cash => "1010",
+            TypeOfAccount.Deposit => "3014",
+            TypeOfAccount.Percent => "3014",
+            _ => "1111",
+        };
+    }
+
 }
