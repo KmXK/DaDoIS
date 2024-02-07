@@ -44,7 +44,7 @@ export class DepositCreateDialog implements OnInit {
     private readonly depositService = inject(DepositService);
 
     public readonly clients = toSignal(this.clientService.clients);
-    public readonly plans = toSignal(this.depositPlanService.getPlans());
+    public readonly plans = toSignal(this.depositPlanService.plans);
 
     public inProcess = signal(false);
 
@@ -63,6 +63,9 @@ export class DepositCreateDialog implements OnInit {
 
     public ngOnInit(): void {
         this.dialogRef.updateSize('600px');
+
+        this.depositPlanService.updatePlans();
+        this.clientService.updateClients();
 
         for (const controlsKey in this.form.controls) {
             const control: any =

@@ -658,6 +658,15 @@ export type UuidOperationFilterInput = {
     nlte?: InputMaybe<Scalars['UUID']['input']>;
 };
 
+export type CloseBankDayMutationVariables = Exact<{
+    days: Scalars['Int']['input'];
+}>;
+
+export type CloseBankDayMutation = {
+    __typename?: 'Mutations';
+    closeBankDay: boolean;
+};
+
 export type GetAccountsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetAccountsQuery = {
@@ -848,6 +857,25 @@ const result: PossibleTypesResultData = {
 };
 export default result;
 
+export const CloseBankDayDocument = gql`
+    mutation closeBankDay($days: Int!) {
+        closeBankDay(days: $days)
+    }
+`;
+
+@Injectable({
+    providedIn: 'root'
+})
+export class CloseBankDayGQL extends Apollo.Mutation<
+    CloseBankDayMutation,
+    CloseBankDayMutationVariables
+> {
+    override document = CloseBankDayDocument;
+
+    constructor(apollo: Apollo.Apollo) {
+        super(apollo);
+    }
+}
 export const GetAccountsDocument = gql`
     query getAccounts {
         bankAccounts {

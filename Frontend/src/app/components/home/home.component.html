@@ -1,0 +1,15 @@
+<div class="container">
+    <h1>BG Bank</h1>
+    <h6>Bondar & Guydo</h6>
+
+    <div class="column">
+        <button mat-button mat-raised-button (click)="closeBankDays(1)">
+            Закрыть банковский день
+        </button>
+        <button mat-button mat-raised-button (click)="closeBankDays(30)">
+            Закрыть банковский месяц
+        </button>
+
+        <span class="notification" [class.hidden]="hidden">{{ message }}</span>
+    </div>
+</div>

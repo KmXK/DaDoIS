@@ -1,5 +1,5 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
@@ -14,15 +14,19 @@ import { SortableObservable } from '../../shared/sortable-observable';
     templateUrl: './deposit-list.component.html',
     styleUrl: './deposit-list.component.scss'
 })
-export class DepositListComponent {
+export class DepositListComponent implements OnInit {
     private readonly depositService = inject(DepositService);
     private readonly dialogService = inject(DialogService);
 
     public readonly displayedColumns = ['number', 'fullName', 'plan', 'amount'];
 
     public readonly deposits = new SortableObservable(
-        this.depositService.getActiveDeposits()
+        this.depositService.activeDeposits
     );
+
+    public ngOnInit(): void {
+        this.depositService.updateActiveDeposits();
+    }
 
     public createDeposit(): void {
         this.dialogService.openCreateDepositDialog();

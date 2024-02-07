@@ -1,5 +1,5 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
@@ -14,7 +14,7 @@ import { SortableObservable } from '../../shared/sortable-observable';
     templateUrl: './deposit-plan-list.component.html',
     styleUrl: './deposit-plan-list.component.scss'
 })
-export class DepositPlanListComponent {
+export class DepositPlanListComponent implements OnInit {
     private readonly depositPlanService = inject(DepositPlanService);
     private readonly dialogService = inject(DialogService);
 
@@ -26,8 +26,12 @@ export class DepositPlanListComponent {
         'isRevocable'
     ];
     public readonly plans = new SortableObservable(
-        this.depositPlanService.getPlans()
+        this.depositPlanService.plans
     );
+
+    ngOnInit() {
+        this.depositPlanService.updatePlans();
+    }
 
     public createPlan(): void {
         this.dialogService.openCreateDepositPlanDialog();

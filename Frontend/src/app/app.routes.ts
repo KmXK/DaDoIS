@@ -3,9 +3,14 @@ import { AccountListComponent } from './components/account-list/account-list.com
 import { ClientListComponent } from './components/client-list/client-list.component';
 import { DepositListComponent } from './components/deposit-list/deposit-list.component';
 import { DepositPlanListComponent } from './components/deposit-plan-list/deposit-plan-list.component';
+import { HomeComponent } from './components/home/home.component';
 import { TransactionListComponent } from './components/transaction-list/transaction-list.component';
 
 export const routes: Routes = [
+    {
+        path: '',
+        component: HomeComponent
+    },
     {
         path: 'clients',
         component: ClientListComponent
@@ -28,6 +33,6 @@ export const routes: Routes = [
     },
     {
         path: '*',
-        redirectTo: 'clients'
+        redirectTo: ''
     }
 ];
