@@ -23,21 +23,24 @@
         <ng-container matColumnDef="debit">
             <th *matHeaderCellDef mat-header-cell>Дебит</th>
             <td *matCellDef="let element" mat-cell>
-                {{ element.debit }} {{ element.currency.name }}
+                {{ element.debit | number: '1.0-2' }}
+                {{ element.currency.name }}
             </td>
         </ng-container>
 
         <ng-container matColumnDef="credit">
             <th *matHeaderCellDef mat-header-cell>Кредит</th>
             <td *matCellDef="let element" mat-cell>
-                {{ element.credit }} {{ element.currency.name }}
+                {{ element.credit | number: '1.0-2' }}
+                {{ element.currency.name }}
             </td>
         </ng-container>
 
         <ng-container matColumnDef="amount">
             <th *matHeaderCellDef mat-header-cell>Сальдо</th>
             <td *matCellDef="let element" mat-cell>
-                {{ element.amount }} {{ element.currency.name }}
+                {{ element.amount | number: '1.0-2' }}
+                {{ element.currency.name }}
             </td>
         </ng-container>
 

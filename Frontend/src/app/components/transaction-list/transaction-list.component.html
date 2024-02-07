@@ -30,7 +30,9 @@
 
         <ng-container matColumnDef="amount">
             <th *matHeaderCellDef mat-header-cell>Сумма</th>
-            <td *matCellDef="let element" mat-cell>{{ element.amount }} BYN</td>
+            <td *matCellDef="let element" mat-cell>
+                {{ element.amount | number: '1.0-2' }} BYN
+            </td>
         </ng-container>
 
         <ng-container matColumnDef="date">

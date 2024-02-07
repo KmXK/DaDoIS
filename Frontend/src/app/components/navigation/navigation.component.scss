@@ -1,5 +1,4 @@
 .container {
-
     z-index: 1000;
     margin: 0;
     padding: 0 10px;
@@ -13,7 +12,9 @@
     height: 60px;
     background-color: #ddd;
 
-    .logo {
+    .logo a {
+        text-decoration: none;
+        color: black;
         margin: 0;
         font-size: 25px;
     }
