@@ -1,0 +1,46 @@
+<div class="container">
+    <div class="container-head">
+        <h2>Транзакции</h2>
+    </div>
+
+    <table [dataSource]="transactions" mat-table>
+        <ng-container matColumnDef="source">
+            <th *matHeaderCellDef mat-header-cell>Отправитель</th>
+            <td *matCellDef="let element" mat-cell>
+                @if (element.source) {
+                    {{ element.source.typeOfAccount }}
+                    {{ element.source.ibanNumber }}
+                } @else {
+                    НАЛИЧНЫЕ
+                }
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="target">
+            <th *matHeaderCellDef mat-header-cell>Получатель</th>
+            <td *matCellDef="let element" mat-cell>
+                @if (element.target) {
+                    {{ element.target.typeOfAccount }}
+                    {{ element.target.ibanNumber }}
+                } @else {
+                    НАЛИЧНЫЕ
+                }
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="amount">
+            <th *matHeaderCellDef mat-header-cell>Сумма</th>
+            <td *matCellDef="let element" mat-cell>{{ element.amount }} BYN</td>
+        </ng-container>
+
+        <ng-container matColumnDef="date">
+            <th *matHeaderCellDef mat-header-cell>Дата</th>
+            <td *matCellDef="let element" mat-cell>
+                {{ element.date | date: 'dd.MM.yyyy г.' }}
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let element; columns: displayedColumns"></tr>
+    </table>
+</div>

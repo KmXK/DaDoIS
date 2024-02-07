@@ -28,9 +28,18 @@ export class AccountListComponent {
 
     public readonly deposits = this.accountService.getAccounts().pipe(
         map(accounts => {
-            return [...accounts].sort(x =>
-                ['MAIN', 'CASH'].some(y => y === x.typeOfAccount) ? -1 : 1
-            );
+            return [...accounts].sort((a, b) => {
+                if (a.typeOfAccount === 'MAIN' || b.typeOfAccount === 'MAIN') {
+                    return a.typeOfAccount === 'MAIN' ? -1 : 1;
+                } else if (
+                    a.typeOfAccount === 'CASH' ||
+                    b.typeOfAccount === 'CASH'
+                ) {
+                    return a.typeOfAccount === 'CASH' ? -1 : 1;
+                }
+
+                return 0;
+            });
         })
     );
     protected readonly AccountType = AccountType;

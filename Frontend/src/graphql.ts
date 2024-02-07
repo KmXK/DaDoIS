@@ -816,6 +816,28 @@ export type CreateDepositMutation = {
     createDepositContract: { __typename?: 'DepositContract'; id: number };
 };
 
+export type GetTransactionsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetTransactionsQuery = {
+    __typename?: 'Queries';
+    transitLogs: Array<{
+        __typename?: 'TransitLog';
+        id: any;
+        amount: number;
+        date: any;
+        source?: {
+            __typename?: 'BankAccount';
+            typeOfAccount: TypeOfAccount;
+            ibanNumber: string;
+        } | null;
+        target?: {
+            __typename?: 'BankAccount';
+            typeOfAccount: TypeOfAccount;
+            ibanNumber: string;
+        } | null;
+    }>;
+};
+
 export interface PossibleTypesResultData {
     possibleTypes: {
         [key: string]: string[];
@@ -1127,6 +1149,37 @@ export class CreateDepositGQL extends Apollo.Mutation<
     CreateDepositMutationVariables
 > {
     override document = CreateDepositDocument;
+
+    constructor(apollo: Apollo.Apollo) {
+        super(apollo);
+    }
+}
+export const GetTransactionsDocument = gql`
+    query getTransactions {
+        transitLogs {
+            id
+            amount
+            date
+            source {
+                typeOfAccount
+                ibanNumber
+            }
+            target {
+                typeOfAccount
+                ibanNumber
+            }
+        }
+    }
+`;
+
+@Injectable({
+    providedIn: 'root'
+})
+export class GetTransactionsGQL extends Apollo.Query<
+    GetTransactionsQuery,
+    GetTransactionsQueryVariables
+> {
+    override document = GetTransactionsDocument;
 
     constructor(apollo: Apollo.Apollo) {
         super(apollo);

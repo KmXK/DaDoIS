@@ -3,6 +3,7 @@ import { AccountListComponent } from './components/account-list/account-list.com
 import { ClientListComponent } from './components/client-list/client-list.component';
 import { DepositListComponent } from './components/deposit-list/deposit-list.component';
 import { DepositPlanListComponent } from './components/deposit-plan-list/deposit-plan-list.component';
+import { TransactionListComponent } from './components/transaction-list/transaction-list.component';
 
 export const routes: Routes = [
     {
@@ -20,6 +21,10 @@ export const routes: Routes = [
     {
         path: 'accounts',
         component: AccountListComponent
+    },
+    {
+        path: 'transactions',
+        component: TransactionListComponent
     },
     {
         path: '*',
