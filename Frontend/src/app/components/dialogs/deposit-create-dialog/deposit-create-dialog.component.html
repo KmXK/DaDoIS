@@ -30,9 +30,9 @@
         <mat-form-field>
             <mat-label>Сумма</mat-label>
             <input matInput type="number" formControlName="amount" />
-            @if (form.controls.plan.value) {
+            @if (form.controls.plan.value !== null) {
                 <mat-hint>
-                    Валюта: {{ form.controls.plan.value!.currency!.name ?? '' }}
+                    Валюта: {{ form.controls.plan.value!.currency!.name }}
                 </mat-hint>
             }
         </mat-form-field>
