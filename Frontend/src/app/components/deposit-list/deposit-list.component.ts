@@ -18,7 +18,13 @@ export class DepositListComponent implements OnInit {
     private readonly depositService = inject(DepositService);
     private readonly dialogService = inject(DialogService);
 
-    public readonly displayedColumns = ['number', 'fullName', 'plan', 'amount'];
+    public readonly displayedColumns = [
+        'number',
+        'fullName',
+        'plan',
+        'amount',
+        'actions'
+    ];
 
     public readonly deposits = new SortableObservable(
         this.depositService.activeDeposits
@@ -38,5 +44,9 @@ export class DepositListComponent implements OnInit {
         lastName: string;
     }): string {
         return `${client.firstName} ${client.lastName} ${client.patronymic}`;
+    }
+
+    public withdraw(id: number): void {
+        this.depositService.withdraw(id).subscribe(() => {});
     }
 }

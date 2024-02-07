@@ -29,7 +29,9 @@ export class TransactionListComponent {
         .getTransactions()
         .pipe(
             map(transactions =>
-                [...transactions].sort((a, b) => a.date - b.date)
+                [...transactions].sort((a, b) => {
+                    return Date.parse(b.date) - Date.parse(a.date);
+                })
             )
         );
 

@@ -35,6 +35,7 @@ export const GET_ACTIVE_DEPOSITS = gql`
                     id
                     name
                 }
+                isRevocable
             }
             amount
             number
@@ -53,5 +54,11 @@ export const CREATE_DEPOSIT = gql`
         createDepositContract(depositContract: $deposit) {
             id
         }
+    }
+`;
+
+export const WITHDRAW_DEPOSIT = gql`
+    mutation withdrawDeposit($id: Int!) {
+        closeDepositContract(id: $id)
     }
 `;

@@ -4,7 +4,8 @@ import {
     CreateDepositContractInput,
     CreateDepositGQL,
     GetActiveDepositsGQL,
-    GetActiveDepositsQuery
+    GetActiveDepositsQuery,
+    WithdrawDepositGQL
 } from '../../graphql';
 import { mapMutationResult } from '../shared/map-mutation-result.operator';
 
@@ -13,6 +14,7 @@ import { mapMutationResult } from '../shared/map-mutation-result.operator';
 })
 export class DepositService {
     private readonly _getActiveDepositsGQL = inject(GetActiveDepositsGQL);
+    private readonly _withdrawGQL = inject(WithdrawDepositGQL);
     private readonly _createDepositGQL = inject(CreateDepositGQL);
 
     private _activeDeposits = new BehaviorSubject<
@@ -34,5 +36,11 @@ export class DepositService {
             mapMutationResult(data => data?.createDepositContract.id),
             tap(() => this.updateActiveDeposits())
         );
+    }
+
+    public withdraw(id: number) {
+        return this._withdrawGQL
+            .mutate({ id })
+            .pipe(tap(() => this.updateActiveDeposits()));
     }
 }

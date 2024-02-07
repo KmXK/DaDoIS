@@ -804,6 +804,7 @@ export type GetActiveDepositsQuery = {
             __typename?: 'Deposit';
             id: number;
             name: string;
+            isRevocable: boolean;
             currency: { __typename?: 'Currency'; id: number; name: string };
         };
         client: {
@@ -823,6 +824,15 @@ export type CreateDepositMutationVariables = Exact<{
 export type CreateDepositMutation = {
     __typename?: 'Mutations';
     createDepositContract: { __typename?: 'DepositContract'; id: number };
+};
+
+export type WithdrawDepositMutationVariables = Exact<{
+    id: Scalars['Int']['input'];
+}>;
+
+export type WithdrawDepositMutation = {
+    __typename?: 'Mutations';
+    closeDepositContract: boolean;
 };
 
 export type GetTransactionsQueryVariables = Exact<{ [key: string]: never }>;
@@ -1135,6 +1145,7 @@ export const GetActiveDepositsDocument = gql`
                     id
                     name
                 }
+                isRevocable
             }
             amount
             number
@@ -1177,6 +1188,25 @@ export class CreateDepositGQL extends Apollo.Mutation<
     CreateDepositMutationVariables
 > {
     override document = CreateDepositDocument;
+
+    constructor(apollo: Apollo.Apollo) {
+        super(apollo);
+    }
+}
+export const WithdrawDepositDocument = gql`
+    mutation withdrawDeposit($id: Int!) {
+        closeDepositContract(id: $id)
+    }
+`;
+
+@Injectable({
+    providedIn: 'root'
+})
+export class WithdrawDepositGQL extends Apollo.Mutation<
+    WithdrawDepositMutation,
+    WithdrawDepositMutationVariables
+> {
+    override document = WithdrawDepositDocument;
 
     constructor(apollo: Apollo.Apollo) {
         super(apollo);
