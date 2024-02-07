@@ -18,6 +18,7 @@ import { CreateDepositContractInput } from '../../../../graphql';
 import { ClientService } from '../../../services/client.service';
 import { DepositPlanService } from '../../../services/deposit-plan.service';
 import { DepositService } from '../../../services/deposit.service';
+import { removeError } from '../../../shared/control.helper';
 
 @Component({
     selector: 'app-client-view-dialog',
@@ -55,13 +56,25 @@ export class DepositCreateDialog implements OnInit {
         >(null!, [Validators.required]),
         amount: new FormControl<number>(0, [
             Validators.required,
-            Validators.min(0)
+            Validators.min(1)
         ])
     });
     public selectedPlan: any;
 
     public ngOnInit(): void {
         this.dialogRef.updateSize('600px');
+
+        for (const controlsKey in this.form.controls) {
+            const control: any =
+                this.form.controls[
+                    controlsKey as keyof typeof this.form.controls
+                ];
+
+            control.valueChanges.subscribe(() => {
+                removeError(control, 'serverError');
+                console.log(this.form.errors);
+            });
+        }
     }
 
     public close(): void {

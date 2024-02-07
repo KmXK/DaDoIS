@@ -24,10 +24,6 @@ export class DepositListComponent {
         this.depositService.getActiveDeposits()
     );
 
-    ngOnInit() {
-        this.deposits.get().subscribe(console.log);
-    }
-
     public createDeposit(): void {
         this.dialogService.openCreateDepositDialog();
     }
