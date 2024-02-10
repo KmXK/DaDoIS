@@ -38,8 +38,8 @@ public class Mutations
     public async Task<bool> DeleteClient(Guid id, [Service] AppDbContext db)
     {
         var client = await db.Clients.FindAsync(id) ?? throw new NotFoundException("Client");
-        if ((client.DepositContracts is null || client.DepositContracts.Count != 0) &&
-            (client.CreditContracts is null || client.CreditContracts.Count != 0))
+        if (client.DepositContracts is not null && client.DepositContracts.Count != 0 ||
+            client.CreditContracts is not null && client.CreditContracts.Count != 0)
             return false;
 
         db.Clients.Remove(client);
