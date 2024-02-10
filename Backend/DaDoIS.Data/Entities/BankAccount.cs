@@ -14,6 +14,8 @@ public class BankAccount
     public required int CurrencyId { get; set; }
     public virtual DepositContract? DepositContract { get; set; }
     public int? DepositContractId { get; set; }
+    public virtual CreditContract? CreditContract { get; set; }
+    public int? CreditContractId { get; set; }
     [NotMapped]
     public double Amount { get => AccountType == AccountType.Active ? Debit - Credit : Credit - Debit; }
     [NotMapped]
