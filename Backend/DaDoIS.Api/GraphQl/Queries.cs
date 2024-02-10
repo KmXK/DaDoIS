@@ -66,4 +66,10 @@ public class Queries
     [UseSorting]
     public IQueryable<CreditContractDto> CreditContracts([Service] AppDbContext db) =>
         db.CreditContracts.AsQueryable().ProjectTo<CreditContractDto>();
+
+    [UseProjection]
+    [UseFiltering]
+    [UseSorting]
+    public IQueryable<CardDto> Cards([Service] AppDbContext db) =>
+        db.Cards.AsQueryable().ProjectTo<CardDto>();
 }

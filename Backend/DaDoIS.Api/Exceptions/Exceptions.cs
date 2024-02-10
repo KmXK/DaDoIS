@@ -4,3 +4,8 @@ public class NotFoundException(string Member) : Exception
 {
     public override string ToString() => $"{Member} not found";
 }
+
+public class ErrorException(string ErrorMessage) : Exception
+{
+    public override string ToString() => ErrorMessage;
+}

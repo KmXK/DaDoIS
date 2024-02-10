@@ -7,5 +7,7 @@ public enum TypeOfAccount
     Deposit,
     DepositPercent,
     Credit,
-    CreditPercent
+    CreditPercent,
+    A1,
+    MTS
 }

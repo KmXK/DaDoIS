@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime;
 
 namespace DaDoIS.Data.Entities;
 
@@ -16,6 +15,7 @@ public class BankAccount
     public int? DepositContractId { get; set; }
     public virtual CreditContract? CreditContract { get; set; }
     public int? CreditContractId { get; set; }
+    public virtual List<Card>? Cards { get; set; }
     [NotMapped]
     public double Amount { get => AccountType == AccountType.Active ? Debit - Credit : Credit - Debit; }
     [NotMapped]

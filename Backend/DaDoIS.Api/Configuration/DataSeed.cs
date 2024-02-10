@@ -225,6 +225,22 @@ public class DataSeed(AppDbContext db, IMapper mapper)
                         AccountType = AccountType.Active,
                         TypeOfAccount = TypeOfAccount.Cash
                     },
+                    new () {
+                        Debit = 0,
+                        Credit = 0,
+                        CurrencyId = 1,
+                        Currency = db.Currencies.Find(1)!,
+                        AccountType = AccountType.Passive,
+                        TypeOfAccount = TypeOfAccount.MTS
+                    },
+                    new () {
+                        Debit = 0,
+                        Credit = 0,
+                        CurrencyId = 1,
+                        Currency = db.Currencies.Find(1)!,
+                        AccountType = AccountType.Passive,
+                        TypeOfAccount = TypeOfAccount.A1
+                    },
                 }
             );
             db.SaveChanges();

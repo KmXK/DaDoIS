@@ -29,6 +29,12 @@ public class ErrorFilter : IErrorFilter
                 .RemoveLocations()
                 .RemovePath()
                 .WithMessage(nex.ToString()),
+            ErrorException eex => error
+                .RemoveCode()
+                .RemoveException()
+                .RemoveLocations()
+                .RemovePath()
+                .WithMessage(eex.ToString()),
             _ => error.WithException(error.Exception),
         };
     }

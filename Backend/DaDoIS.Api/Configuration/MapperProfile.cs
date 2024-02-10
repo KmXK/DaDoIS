@@ -20,6 +20,7 @@ public class MapperProfile : Profile
         CreateMap<DepositContract, DepositContractDto>();
         CreateMap<Credit, CreditDto>();
         CreateMap<CreditContract, CreditContractDto>();
+        CreateMap<Card, CardDto>();
 
 
         CreateMap<CreateClientDto, Client>();
@@ -43,6 +44,7 @@ public static class MapperExtensions
         cfg.CreateProjection<DepositContract, DepositContractDto>();
         cfg.CreateProjection<Credit, CreditDto>();
         cfg.CreateProjection<CreditContract, CreditContractDto>();
+        cfg.CreateProjection<Card, CardDto>();
     });
 
     public static IQueryable<T> ProjectTo<T>(this IQueryable data) =>

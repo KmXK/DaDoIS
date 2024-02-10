@@ -17,6 +17,8 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
     public required DbSet<CreditContract> CreditContracts { get; init; }
 
     public required DbSet<BankAccount> BankAccounts { get; init; }
+    public required DbSet<Card> Cards { get; init; }
+
     public required DbSet<TransitLog> TransitLogs { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

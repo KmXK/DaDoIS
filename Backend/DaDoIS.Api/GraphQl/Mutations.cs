@@ -5,6 +5,7 @@ using DaDoIS.Data;
 using DaDoIS.Data.Entities;
 using FluentValidation;
 using DaDoIS.Api.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace DaDoIS.Api.GraphQl;
 
@@ -120,4 +121,55 @@ public class Mutations
         await service.CloseBankDay(days);
         return true;
     }
+
+    public async Task<CardDto> OpenCard(
+        [GraphQLName("bankAccountId")] Guid id,
+        [Service] IMapper mapper,
+        [Service] AppDbContext db)
+    {
+        var bankAccount = await db.BankAccounts
+            .FirstOrDefaultAsync(a => a.Id == id && a.CreditContract != null)
+            ?? throw new NotFoundException("BankAccount");
+        var card = (await db.Cards.AddAsync(new Card()
+        {
+            BankAccount = bankAccount,
+            BankAccountId = id,
+            Client = bankAccount.CreditContract!.Client,
+            ClientId = bankAccount.CreditContract!.ClientId,
+            Pin = Random.Shared.Next(1000, 9999)
+        })).Entity;
+        await db.SaveChangesAsync();
+        return mapper.Map<CardDto>(card);
+    }
+
+    public async Task<Guid> InsertCard(
+        string cardNumber,
+        int pin,
+        [Service] AtmService service) =>
+        await service.InsertCard(cardNumber, pin);
+
+    public async Task<CardInfoDto> GetCardInfo(
+        Guid token,
+        [Service] AtmService service) =>
+        await service.GetCardInfo(token);
+
+    public async Task<CardInfoDto> PuttingMoneyOnPhone(
+        Guid token,
+        double amount,
+        Guid accountId,
+        [Service] AtmService service) =>
+        await service.PuttingMoneyOnPhone(token, amount, accountId);
+
+    public async Task<CardInfoDto> WithdrawMoney(
+        Guid token,
+        double amount,
+        [Service] AtmService service) =>
+        await service.WithdrawMoney(token, amount);
+
+    [GraphQLName("getCard")]
+    public async Task<bool> GetCard(
+        Guid token,
+        [Service] AtmService service) =>
+        await service.GetCard(token);
+
 }

@@ -129,8 +129,8 @@ public class BankService(AppDbContext db)
         var main = await db.BankAccounts.FirstAsync(x => x.TypeOfAccount == TypeOfAccount.Main);
 
         await TransferMoney(money, main, creditAccount);
-        await TransferMoney(money, creditAccount, cash);
-        await TransferMoney(money, cash, null);
+        //await TransferMoney(money, creditAccount, cash);
+        //await TransferMoney(money, cash, null);
 
         return creditContract;
     }
@@ -148,8 +148,8 @@ public class BankService(AppDbContext db)
 
             var money = contract.Amount * contract.Credit.Currency.ExchangeRate;
 
-            await TransferMoney(money, null, cash);
-            await TransferMoney(money, cash, creditAccount);
+            //await TransferMoney(money, null, cash);
+            //await TransferMoney(money, cash, creditAccount);
             await TransferMoney(money, creditAccount, main);
         }
 
