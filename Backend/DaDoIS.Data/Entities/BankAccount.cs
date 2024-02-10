@@ -32,7 +32,9 @@ public class BankAccount
             TypeOfAccount.Main => "7327",
             TypeOfAccount.Cash => "1010",
             TypeOfAccount.Deposit => "3014",
-            TypeOfAccount.Percent => "3014",
+            TypeOfAccount.DepositPercent => "3014",
+            TypeOfAccount.Credit => "2400",
+            TypeOfAccount.CreditPercent => "2400",
             _ => "1111",
         };
     }

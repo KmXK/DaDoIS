@@ -10,10 +10,11 @@ namespace DaDoIS.Api.GraphQl;
 
 public class Mutations
 {
-    public async Task<ClientDto> CreateClient([GraphQLName("client")] CreateClientDto dto,
-                                  [Service] IValidator<CreateClientDto> validator,
-                                  [Service] IMapper mapper,
-                                  [Service] AppDbContext db)
+    public async Task<ClientDto> CreateClient(
+        [GraphQLName("client")] CreateClientDto dto,
+        [Service] IValidator<CreateClientDto> validator,
+        [Service] IMapper mapper,
+        [Service] AppDbContext db)
     {
         await validator.ValidateAndThrowAsync(dto);
         var client = (await db.Clients.AddAsync(mapper.Map<Client>(dto))).Entity;
@@ -21,10 +22,11 @@ public class Mutations
         return mapper.Map<ClientDto>(client);
     }
 
-    public async Task<ClientDto?> PutClient([GraphQLName("client")] UpdateClientDto dto,
-                                [Service] IValidator<UpdateClientDto> validator,
-                                [Service] IMapper mapper,
-                                [Service] AppDbContext db)
+    public async Task<ClientDto?> PutClient(
+        [GraphQLName("client")] UpdateClientDto dto,
+        [Service] IValidator<UpdateClientDto> validator,
+        [Service] IMapper mapper,
+        [Service] AppDbContext db)
     {
         await validator.ValidateAndThrowAsync(dto);
         var client = await db.Clients.FindAsync(dto.Id) ?? throw new NotFoundException("Client");
@@ -36,15 +38,20 @@ public class Mutations
     public async Task<bool> DeleteClient(Guid id, [Service] AppDbContext db)
     {
         var client = await db.Clients.FindAsync(id) ?? throw new NotFoundException("Client");
+        if ((client.DepositContracts is null || client.DepositContracts.Count != 0) &&
+            (client.CreditContracts is null || client.CreditContracts.Count != 0))
+            return false;
+
         db.Clients.Remove(client);
         await db.SaveChangesAsync();
         return true;
     }
 
-    public async Task<DepositDto> CreateDeposit([GraphQLName("deposit")] CreateDepositDto dto,
-                                    [Service] IValidator<CreateDepositDto> validator,
-                                    [Service] IMapper mapper,
-                                    [Service] AppDbContext db)
+    public async Task<DepositDto> CreateDeposit(
+        [GraphQLName("deposit")] CreateDepositDto dto,
+        [Service] IValidator<CreateDepositDto> validator,
+        [Service] IMapper mapper,
+        [Service] AppDbContext db)
     {
         await validator.ValidateAndThrowAsync(dto);
         var deposit = (await db.Deposits.AddAsync(mapper.Map<Deposit>(dto))).Entity;
@@ -56,6 +63,26 @@ public class Mutations
     {
         var deposit = await db.Deposits.FindAsync(id) ?? throw new NotFoundException("Deposit");
         db.Deposits.Remove(deposit);
+        await db.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<CreditDto> CreateCredit(
+        [GraphQLName("credit")] CreateCreditDto dto,
+        [Service] IValidator<CreateCreditDto> validator,
+        [Service] IMapper mapper,
+        [Service] AppDbContext db)
+    {
+        await validator.ValidateAndThrowAsync(dto);
+        var credit = (await db.Credits.AddAsync(mapper.Map<Credit>(dto))).Entity;
+        await db.SaveChangesAsync();
+        return mapper.Map<CreditDto>(credit);
+    }
+
+    public async Task<bool> DeleteCredit(int id, [Service] AppDbContext db)
+    {
+        var credit = await db.Credits.FindAsync(id) ?? throw new NotFoundException("Credit");
+        db.Credits.Remove(credit);
         await db.SaveChangesAsync();
         return true;
     }
@@ -75,6 +102,17 @@ public class Mutations
     {
         await service.CloseDepositContract(id);
         return true;
+    }
+
+    public async Task<CreditContractDto> CreateCreditContract(
+        [GraphQLName("creditContract")] CreateCreditContractDto dto,
+        [Service] IValidator<CreateCreditContractDto> validator,
+        [Service] IMapper mapper,
+        [Service] BankService service)
+    {
+        await validator.ValidateAndThrowAsync(dto);
+        var credit = await service.CreateCreditContract(dto);
+        return mapper.Map<CreditContractDto>(credit);
     }
 
     public async Task<bool> CloseBankDay(int days, [Service] BankService service)

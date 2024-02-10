@@ -5,5 +5,7 @@ public enum TypeOfAccount
     Main,
     Cash,
     Deposit,
-    Percent
+    DepositPercent,
+    Credit,
+    CreditPercent
 }

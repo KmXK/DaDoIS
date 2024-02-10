@@ -29,7 +29,7 @@ public class BankService(AppDbContext db)
             Debit = 0,
             Credit = 0,
             AccountType = AccountType.Passive,
-            TypeOfAccount = TypeOfAccount.Percent,
+            TypeOfAccount = TypeOfAccount.DepositPercent,
             Currency = deposit!.Currency,
             CurrencyId = deposit!.CurrencyId,
         })).Entity;
@@ -66,34 +66,138 @@ public class BankService(AppDbContext db)
     {
         var contract = await db.DepositContracts.FindAsync(contractId) ?? throw new NotFoundException("DepositContract");
 
-        var money = contract.Amount * contract.Deposit.Currency.ExchangeRate;
-        var cashAccount = await db.BankAccounts.FirstAsync(x => x.TypeOfAccount == TypeOfAccount.Cash);
-        var mainAccount = await db.BankAccounts.FirstAsync(x => x.TypeOfAccount == TypeOfAccount.Main);
-
-        var percentAccount = contract.BankAccounts.First(x => x.TypeOfAccount == TypeOfAccount.Percent);
+        var cash = await db.BankAccounts.FirstAsync(x => x.TypeOfAccount == TypeOfAccount.Cash);
+        var main = await db.BankAccounts.FirstAsync(x => x.TypeOfAccount == TypeOfAccount.Main);
+        var percentAccount = contract.BankAccounts.First(x => x.TypeOfAccount == TypeOfAccount.DepositPercent);
         var depositAccount = contract.BankAccounts.First(x => x.TypeOfAccount == TypeOfAccount.Deposit);
 
-        await TransferMoney(money, mainAccount, depositAccount);
-        await TransferMoney(money, depositAccount, cashAccount);
-        await TransferMoney(money, cashAccount, null);
+        var money = contract.Amount * contract.Deposit.Currency.ExchangeRate;
+
+        await TransferMoney(money, main, depositAccount);
+        await TransferMoney(money, depositAccount, cash);
+        await TransferMoney(money, cash, null);
 
         contract.IsActive = false;
         await db.SaveChangesAsync();
     }
 
-    public async Task TransferPercents(DepositContract contract, int days)
+    public async Task<CreditContract> CreateCreditContract(CreateCreditContractDto dto)
+    {
+        var client = await db.Clients.FindAsync(dto.ClientId);
+        var credit = await db.Credits.FindAsync(dto.CreditId);
+
+        var creditAccount = (await db.BankAccounts.AddAsync(new()
+        {
+            Debit = 0,
+            Credit = 0,
+            AccountType = AccountType.Active,
+            TypeOfAccount = TypeOfAccount.Credit,
+            Currency = credit!.Currency,
+            CurrencyId = credit!.CurrencyId,
+        })).Entity;
+        await db.SaveChangesAsync();
+
+        var percentAccount = (await db.BankAccounts.AddAsync(new()
+        {
+            Debit = 0,
+            Credit = 0,
+            AccountType = AccountType.Active,
+            TypeOfAccount = TypeOfAccount.CreditPercent,
+            Currency = credit!.Currency,
+            CurrencyId = credit!.CurrencyId,
+        })).Entity;
+        await db.SaveChangesAsync();
+
+        var creditContract = (await db.CreditContracts.AddAsync(new()
+        {
+            Number = dto.Number,
+            Client = client!,
+            ClientId = dto.ClientId,
+            Credit = credit,
+            CreditId = dto.CreditId,
+            DateBegin = DateTime.Now,
+            DateEnd = DateTime.Now.AddDays(credit.Period),
+            IsActive = true,
+            DaysToEnd = credit.Period,
+            Amount = dto.Amount,
+            BankAccounts = [creditAccount, percentAccount]
+        })).Entity;
+        await db.SaveChangesAsync();
+
+        var money = dto.Amount * credit.Currency.ExchangeRate;
+        var cash = await db.BankAccounts.FirstAsync(x => x.TypeOfAccount == TypeOfAccount.Cash);
+        var main = await db.BankAccounts.FirstAsync(x => x.TypeOfAccount == TypeOfAccount.Main);
+
+        await TransferMoney(money, main, creditAccount);
+        await TransferMoney(money, creditAccount, cash);
+        await TransferMoney(money, cash, null);
+
+        return creditContract;
+    }
+
+    public async Task CloseCreditContract(int contractId)
+    {
+        var contract = await db.CreditContracts.FindAsync(contractId) ?? throw new NotFoundException("CreditContract");
+
+        if (contract.Credit.IsAnnuity)
+        {
+            var cash = await db.BankAccounts.FirstAsync(x => x.TypeOfAccount == TypeOfAccount.Cash);
+            var main = await db.BankAccounts.FirstAsync(x => x.TypeOfAccount == TypeOfAccount.Main);
+            var percentAccount = contract.BankAccounts.First(x => x.TypeOfAccount == TypeOfAccount.CreditPercent);
+            var creditAccount = contract.BankAccounts.First(x => x.TypeOfAccount == TypeOfAccount.Credit);
+
+            var money = contract.Amount * contract.Credit.Currency.ExchangeRate;
+
+            await TransferMoney(money, null, cash);
+            await TransferMoney(money, cash, creditAccount);
+            await TransferMoney(money, creditAccount, main);
+        }
+
+        contract.IsActive = false;
+        await db.SaveChangesAsync();
+    }
+
+    public async Task TransferDepositPercents(DepositContract contract, int days)
     {
         var money = contract.Amount * contract.Deposit.Currency.ExchangeRate;
         var percentMoney = contract.Deposit.Interest / 12.0 * (days / 30) * money;
 
-        var cashAccount = await db.BankAccounts.FirstAsync(x => x.TypeOfAccount == TypeOfAccount.Cash);
-        var mainAccount = await db.BankAccounts.FirstAsync(x => x.TypeOfAccount == TypeOfAccount.Main);
+        var cash = await db.BankAccounts.FirstAsync(x => x.TypeOfAccount == TypeOfAccount.Cash);
+        var main = await db.BankAccounts.FirstAsync(x => x.TypeOfAccount == TypeOfAccount.Main);
         var depositAccount = contract.BankAccounts.First(x => x.TypeOfAccount == TypeOfAccount.Deposit);
-        var percentAccount = contract.BankAccounts.First(x => x.TypeOfAccount == TypeOfAccount.Percent);
+        var percentAccount = contract.BankAccounts.First(x => x.TypeOfAccount == TypeOfAccount.DepositPercent);
 
-        await TransferMoney(percentMoney, mainAccount, percentAccount);
-        await TransferMoney(percentMoney, percentAccount, cashAccount);
-        await TransferMoney(percentMoney, cashAccount, null);
+        await TransferMoney(percentMoney, main, percentAccount);
+        await TransferMoney(percentMoney, percentAccount, cash);
+        await TransferMoney(percentMoney, cash, null);
+    }
+
+    public async Task TransferCreditPercents(CreditContract contract)
+    {
+        double money;
+
+        if (contract.Credit.IsAnnuity)
+        {
+            var S = contract.Amount;
+            var P = contract.Credit.Interest;
+            var N = contract.Credit.Period / 30;
+            money = S * P / 12 * Math.Pow(1 + P / 12, N) / (Math.Pow(1 + P / 12, N) - 1);
+        }
+        else
+        {
+            money = contract.Amount / 12 * contract.Credit.Interest;
+        }
+
+        money *= contract.Credit.Currency.ExchangeRate;
+
+        var cash = await db.BankAccounts.FirstAsync(x => x.TypeOfAccount == TypeOfAccount.Cash);
+        var main = await db.BankAccounts.FirstAsync(x => x.TypeOfAccount == TypeOfAccount.Main);
+        var creditAccount = contract.BankAccounts.First(x => x.TypeOfAccount == TypeOfAccount.Credit);
+        var percentAccount = contract.BankAccounts.First(x => x.TypeOfAccount == TypeOfAccount.CreditPercent);
+
+        await TransferMoney(money, percentAccount, main);
+        await TransferMoney(money, null, cash);
+        await TransferMoney(money, cash, percentAccount);
     }
 
     public async Task TransferMoney(double money, BankAccount? from, BankAccount? to)
@@ -150,30 +254,25 @@ public class BankService(AppDbContext db)
 
     public async Task CloseBankDay(int daysCount)
     {
-        var contracts = await db.DepositContracts.Where(c => c.IsActive).ToListAsync();
-
-        foreach (var contract in contracts)
+        var depositContracts = await db.DepositContracts.Where(c => c.IsActive).ToListAsync();
+        foreach (var contract in depositContracts)
         {
             if (contract.Deposit.IsRevocable)
             {
-                var percentsCount = 0;
                 var startDay = contract.DaysToEnd;
                 contract.DaysToEnd -= daysCount;
                 var endDay = contract.DaysToEnd;
                 endDay = endDay < 0 ? 0 : endDay;
 
-                for (int i = contract.DaysToEnd - 1; i >= contract.DaysToEnd - daysCount; i--)
-                    if (i % 30 == 0) percentsCount++;
-
-                for (int i = 0; i < percentsCount; i++)
-                    await TransferPercents(contract, 30);
+                for (int i = startDay - 1; i >= endDay; i--)
+                    if (i % 30 == 0)
+                        await TransferDepositPercents(contract, 30);
 
                 if (endDay == 0)
                 {
-                    await TransferPercents(contract, 30);
+                    contract.DaysToEnd = 0;
                     await CloseDepositContract(contract.Id);
                 }
-
             }
             else
             {
@@ -181,30 +280,29 @@ public class BankService(AppDbContext db)
                 if (contract.DaysToEnd <= 0)
                 {
                     contract.DaysToEnd = 0;
-                    await TransferPercents(contract, contract.Deposit.Period);
+                    await TransferDepositPercents(contract, contract.Deposit.Period);
                     await CloseDepositContract(contract.Id);
                 }
             }
         }
-    }
 
-    public async Task CloseBankDay()
-    {
-        await db.DepositContracts
-            .Where(c => c.IsActive)
-            .ForEachAsync(c => c.DaysToEnd--);
-        await db.SaveChangesAsync();
+        var creditContracts = await db.CreditContracts.Where(c => c.IsActive).ToListAsync();
+        foreach (var contract in creditContracts)
+        {
+            var startDay = contract.DaysToEnd;
+            contract.DaysToEnd -= daysCount;
+            var endDay = contract.DaysToEnd;
+            endDay = endDay < 0 ? 0 : endDay;
 
-        var depositContracts = await db.DepositContracts
-            .Where(c => c.Deposit.IsRevocable &&
-                        c.DaysToEnd != c.Deposit.Period &&
-                        c.DaysToEnd % 30 == 0).ToListAsync();
-        foreach (var contract in depositContracts)
-            await TransferPercents(contract, 30);
+            for (int i = startDay - 1; i >= endDay; i--)
+                if (i % 30 == 0)
+                    await TransferCreditPercents(contract);
 
-        depositContracts = await db.DepositContracts
-            .Where(c => c.DaysToEnd == 0).ToListAsync();
-        foreach (var contract in depositContracts)
-            await CloseDepositContract(contract.Id);
+            if (endDay == 0)
+            {
+                contract.DaysToEnd = 0;
+                await CloseCreditContract(contract.Id);
+            }
+        }
     }
 }
