@@ -57,6 +57,8 @@ public class AtmService(BankService bankService, AppDbContext db, IMapper mapper
     {
         var card = await db.Cards.FirstOrDefaultAsync(c => c.Token.Equals(token)) ?? throw new NotFoundException("Card");
         var phoneAccount = await db.BankAccounts.FindAsync(accountId) ?? throw new NotFoundException("Phone Account");
+        if (amount > card.BankAccount.Amount)
+            throw new ErrorException("Not enough money");
         await bankService.TransferMoney(amount, card.BankAccount, phoneAccount);
         return await GetCardInfo(card);
     }
@@ -65,6 +67,8 @@ public class AtmService(BankService bankService, AppDbContext db, IMapper mapper
     {
         var card = await db.Cards.FirstOrDefaultAsync(c => c.Token.Equals(token)) ?? throw new NotFoundException("Card");
         var cash = await db.BankAccounts.FirstAsync(x => x.TypeOfAccount == TypeOfAccount.Cash);
+        if (amount > card.BankAccount.Amount)
+            throw new ErrorException("Not enough money");
         await bankService.TransferMoney(amount, card.BankAccount, cash);
         await bankService.TransferMoney(amount, cash, null);
         return await GetCardInfo(card);

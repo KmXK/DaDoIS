@@ -12,6 +12,7 @@ public record BankAccountDto
     public required TypeOfAccount TypeOfAccount { get; set; }
     public required CurrencyDto Currency { get; set; }
     public DepositContractDto? DepositContract { get; set; }
+    public CreditContractDto? CreditContract { get; set; }
     public required double Amount { get; set; }
     public required string IBANNumber { get; set; }
     public List<CardDto>? Cards { get; set; }
