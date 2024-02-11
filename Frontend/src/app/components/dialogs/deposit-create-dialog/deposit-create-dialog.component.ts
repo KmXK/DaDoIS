@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
+    AbstractControl,
     FormControl,
     FormGroup,
     FormsModule,
@@ -18,7 +19,6 @@ import { CreateDepositContractInput } from '../../../../graphql';
 import { ClientService } from '../../../services/client.service';
 import { DepositPlanService } from '../../../services/deposit-plan.service';
 import { DepositService } from '../../../services/deposit.service';
-import { removeError } from '../../../shared/control.helper';
 
 @Component({
     selector: 'app-client-view-dialog',
@@ -68,13 +68,13 @@ export class DepositCreateDialog implements OnInit {
         this.clientService.updateClients();
 
         for (const controlsKey in this.form.controls) {
-            const control: any =
+            const control: AbstractControl =
                 this.form.controls[
                     controlsKey as keyof typeof this.form.controls
                 ];
 
             control.valueChanges.subscribe(() => {
-                removeError(control, 'serverError');
+                control.setErrors(null);
                 console.log(this.form.errors);
             });
         }
@@ -110,6 +110,8 @@ export class DepositCreateDialog implements OnInit {
         const controlsMap: Record<string, keyof typeof this.form.controls> = {
             depositId: 'plan'
         };
+
+        this.inProcess.set(false);
 
         if (Array.isArray(errors) && errors.length > 0) {
             const formErrors: Record<string, boolean> = {};
