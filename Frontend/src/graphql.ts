@@ -909,6 +909,20 @@ export type GetAccountsQuery = {
     }>;
 };
 
+export type GetAccountsFilterQueryVariables = Exact<{
+    type: Array<TypeOfAccount> | TypeOfAccount;
+}>;
+
+export type GetAccountsFilterQuery = {
+    __typename?: 'Queries';
+    bankAccounts: Array<{
+        __typename?: 'BankAccount';
+        id: any;
+        ibanNumber: string;
+        typeOfAccount: TypeOfAccount;
+    }>;
+};
+
 export type OpenCardMutationVariables = Exact<{
     bankAccountId: Scalars['UUID']['input'];
 }>;
@@ -921,6 +935,81 @@ export type OpenCardMutation = {
         cardNumber: string;
         pin: number;
     };
+};
+
+export type InsertCardMutationVariables = Exact<{
+    cardNumber: Scalars['String']['input'];
+    pin: Scalars['Int']['input'];
+}>;
+
+export type InsertCardMutation = { __typename?: 'Mutations'; insertCard: any };
+
+export type CardBalanceMutationVariables = Exact<{
+    token: Scalars['UUID']['input'];
+}>;
+
+export type CardBalanceMutation = {
+    __typename?: 'Mutations';
+    cardInfo: {
+        __typename?: 'CardInfoDto';
+        amount: number;
+        card: {
+            __typename?: 'CardDto';
+            bankAccount: {
+                __typename?: 'BankAccount';
+                currency: { __typename?: 'Currency'; name: string };
+            };
+        };
+    };
+};
+
+export type CardTransferMutationVariables = Exact<{
+    token: Scalars['UUID']['input'];
+}>;
+
+export type CardTransferMutation = {
+    __typename?: 'Mutations';
+    cardInfo: {
+        __typename?: 'CardInfoDto';
+        transitLogs?: Array<{
+            __typename?: 'TransitLog';
+            date: any;
+            amount: number;
+            source?: { __typename?: 'BankAccount'; ibanNumber: string } | null;
+            target?: { __typename?: 'BankAccount'; ibanNumber: string } | null;
+        }> | null;
+    };
+};
+
+export type CardWithdrawMutationVariables = Exact<{
+    token: Scalars['UUID']['input'];
+    amount: Scalars['Float']['input'];
+}>;
+
+export type CardWithdrawMutation = {
+    __typename?: 'Mutations';
+    withdrawMoney: {
+        __typename?: 'CardInfoDto';
+        amount: number;
+        card: {
+            __typename?: 'CardDto';
+            bankAccount: {
+                __typename?: 'BankAccount';
+                currency: { __typename?: 'Currency'; name: string };
+            };
+        };
+    };
+};
+
+export type TransferToMobileMutationVariables = Exact<{
+    token: Scalars['UUID']['input'];
+    amount: Scalars['Float']['input'];
+    operatorId: Scalars['UUID']['input'];
+}>;
+
+export type TransferToMobileMutation = {
+    __typename?: 'Mutations';
+    puttingMoneyOnPhone: { __typename?: 'CardInfoDto'; amount: number };
 };
 
 export type GetCardsQueryVariables = Exact<{ [key: string]: never }>;
@@ -1238,6 +1327,29 @@ export class GetAccountsGQL extends Apollo.Query<
         super(apollo);
     }
 }
+export const GetAccountsFilterDocument = gql`
+    query getAccountsFilter($type: [TypeOfAccount!]!) {
+        bankAccounts(where: { typeOfAccount: { in: $type } }) {
+            id
+            ibanNumber
+            typeOfAccount
+        }
+    }
+`;
+
+@Injectable({
+    providedIn: 'root'
+})
+export class GetAccountsFilterGQL extends Apollo.Query<
+    GetAccountsFilterQuery,
+    GetAccountsFilterQueryVariables
+> {
+    override document = GetAccountsFilterDocument;
+
+    constructor(apollo: Apollo.Apollo) {
+        super(apollo);
+    }
+}
 export const OpenCardDocument = gql`
     mutation openCard($bankAccountId: UUID!) {
         openCard(bankAccountId: $bankAccountId) {
@@ -1256,6 +1368,140 @@ export class OpenCardGQL extends Apollo.Mutation<
     OpenCardMutationVariables
 > {
     override document = OpenCardDocument;
+
+    constructor(apollo: Apollo.Apollo) {
+        super(apollo);
+    }
+}
+export const InsertCardDocument = gql`
+    mutation insertCard($cardNumber: String!, $pin: Int!) {
+        insertCard(pin: $pin, cardNumber: $cardNumber)
+    }
+`;
+
+@Injectable({
+    providedIn: 'root'
+})
+export class InsertCardGQL extends Apollo.Mutation<
+    InsertCardMutation,
+    InsertCardMutationVariables
+> {
+    override document = InsertCardDocument;
+
+    constructor(apollo: Apollo.Apollo) {
+        super(apollo);
+    }
+}
+export const CardBalanceDocument = gql`
+    mutation cardBalance($token: UUID!) {
+        cardInfo(token: $token) {
+            amount
+            card {
+                bankAccount {
+                    currency {
+                        name
+                    }
+                }
+            }
+        }
+    }
+`;
+
+@Injectable({
+    providedIn: 'root'
+})
+export class CardBalanceGQL extends Apollo.Mutation<
+    CardBalanceMutation,
+    CardBalanceMutationVariables
+> {
+    override document = CardBalanceDocument;
+
+    constructor(apollo: Apollo.Apollo) {
+        super(apollo);
+    }
+}
+export const CardTransferDocument = gql`
+    mutation cardTransfer($token: UUID!) {
+        cardInfo(token: $token) {
+            transitLogs {
+                date
+                source {
+                    ibanNumber
+                }
+                target {
+                    ibanNumber
+                }
+                amount
+            }
+        }
+    }
+`;
+
+@Injectable({
+    providedIn: 'root'
+})
+export class CardTransferGQL extends Apollo.Mutation<
+    CardTransferMutation,
+    CardTransferMutationVariables
+> {
+    override document = CardTransferDocument;
+
+    constructor(apollo: Apollo.Apollo) {
+        super(apollo);
+    }
+}
+export const CardWithdrawDocument = gql`
+    mutation cardWithdraw($token: UUID!, $amount: Float!) {
+        withdrawMoney(token: $token, amount: $amount) {
+            amount
+            card {
+                bankAccount {
+                    currency {
+                        name
+                    }
+                }
+            }
+        }
+    }
+`;
+
+@Injectable({
+    providedIn: 'root'
+})
+export class CardWithdrawGQL extends Apollo.Mutation<
+    CardWithdrawMutation,
+    CardWithdrawMutationVariables
+> {
+    override document = CardWithdrawDocument;
+
+    constructor(apollo: Apollo.Apollo) {
+        super(apollo);
+    }
+}
+export const TransferToMobileDocument = gql`
+    mutation transferToMobile(
+        $token: UUID!
+        $amount: Float!
+        $operatorId: UUID!
+    ) {
+        puttingMoneyOnPhone(
+            amount: $amount
+            accountId: $operatorId
+            token: $token
+        ) {
+            amount
+        }
+    }
+`;
+
+@Injectable({
+    providedIn: 'root'
+})
+export class TransferToMobileGQL extends Apollo.Mutation<
+    TransferToMobileMutation,
+    TransferToMobileMutationVariables
+> {
+    override document = TransferToMobileDocument;
 
     constructor(apollo: Apollo.Apollo) {
         super(apollo);

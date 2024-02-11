@@ -1,0 +1,29 @@
+<div class="column-flex equal-width">
+    <h2 class="auto-width">Введите данные карты:</h2>
+
+    <form [formGroup]="formGroup" class="column-flex equal-width">
+        <mat-form-field>
+            <input matInput [formControl]="formGroup.controls.cardNumber" />
+            <mat-label>Номер карты</mat-label>
+        </mat-form-field>
+
+        <mat-form-field>
+            <input matInput [formControl]="formGroup.controls.pin" />
+            <mat-label>PIN</mat-label>
+        </mat-form-field>
+    </form>
+
+    @if (error.length > 0) {
+        <span class="error auto-width">{{ error }}</span>
+    }
+
+    <button
+        mat-button
+        mat-raised-button
+        color="primary"
+        [disabled]="formGroup.invalid"
+        (click)="enterCard()"
+    >
+        Вставить карту
+    </button>
+</div>

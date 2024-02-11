@@ -27,7 +27,7 @@ export function mapMutationResult<TResult, TMappedResult>(
     return result =>
         result.pipe(
             catchError(error => {
-                console.log(JSON.stringify(error));
+                console.log(JSON.parse(JSON.stringify(error)));
                 const extensions = concatArrays<any>(
                     error?.graphQLErrors,
                     error?.networkError.error.errors
@@ -40,9 +40,7 @@ export function mapMutationResult<TResult, TMappedResult>(
                         Object.values(x.extensions)
                     );
 
-                console.log(extensions);
-
-                if (extensions) {
+                if (extensions?.length > 0) {
                     return throwError(() =>
                         (<ErrorExtension[]>Object.values(extensions)).map(
                             ext => ({
@@ -51,9 +49,17 @@ export function mapMutationResult<TResult, TMappedResult>(
                             })
                         )
                     );
+                } else {
+                    return throwError(() => {
+                        return {
+                            propertyName: '',
+                            errorMessage:
+                                error?.networkError.error.errors[0].message
+                        };
+                    });
                 }
 
-                return throwError(() => error);
+                // return throwError(() => error);
             }),
             map(result => mapResultFunc(result.data))
         );

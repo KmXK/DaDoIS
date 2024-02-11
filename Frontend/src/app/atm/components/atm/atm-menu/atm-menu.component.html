@@ -1,0 +1,24 @@
+<div class="column-flex equal-width">
+    <button
+        mat-button
+        mat-raised-button
+        color="primary"
+        (click)="checkBalance()"
+    >
+        Посмотреть баланс
+    </button>
+    <button mat-button mat-raised-button color="primary" (click)="withdraw()">
+        Снять со счёта
+    </button>
+    <button
+        mat-button
+        mat-raised-button
+        color="primary"
+        (click)="topUpMobileBalance()"
+    >
+        Пополнить баланс мобильного телефона
+    </button>
+    <button mat-button mat-raised-button color="warn" (click)="exit()">
+        Достать карту
+    </button>
+</div>

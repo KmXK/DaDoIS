@@ -40,7 +40,10 @@ export class DialogService {
         return dialog.afterOpened();
     }
 
-    public open(dialog: ComponentType<any>): Observable<void> {
-        return this.matDialog.open(dialog).afterClosed();
+    public open(
+        dialog: ComponentType<any>,
+        data: any = undefined
+    ): Observable<void> {
+        return this.matDialog.open(dialog, { data }).afterClosed();
     }
 }

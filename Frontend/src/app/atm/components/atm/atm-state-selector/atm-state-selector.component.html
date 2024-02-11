@@ -1,0 +1,20 @@
+@switch ((state | async)?.state) {
+    @case (AtmState.LOGGED_OUT) {
+        <app-initial-menu-atm></app-initial-menu-atm>
+    }
+    @case (AtmState.ENTERING_CARD) {
+        <app-atm-enter-card></app-atm-enter-card>
+    }
+    @case (AtmState.MENU) {
+        <app-atm-menu></app-atm-menu>
+    }
+    @case (AtmState.BALANCE) {
+        <app-atm-balance></app-atm-balance>
+    }
+    @case (AtmState.WITHDRAW) {
+        <app-atm-withdraw></app-atm-withdraw>
+    }
+    @case (AtmState.MOBILE) {
+        <app-atm-mobile></app-atm-mobile>
+    }
+}

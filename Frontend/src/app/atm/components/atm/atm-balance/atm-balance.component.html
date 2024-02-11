@@ -1,0 +1,9 @@
+<div class="column-flex equal-width">
+    @if (loading()) {
+        <mat-spinner></mat-spinner>
+    } @else {
+        <h2>Ваш баланс равен: {{ balance }} {{ currency }}</h2>
+
+        <button mat-button mat-raised-button (click)="exit()">Вернуться</button>
+    }
+</div>

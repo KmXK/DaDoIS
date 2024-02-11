@@ -1,0 +1,28 @@
+<div class="column-flex equal-width">
+    @if (loading()) {
+        <mat-spinner></mat-spinner>
+    } @else {
+        <h2 class="auto-width">Введите сумму для снятия:</h2>
+
+        <form [formGroup]="formGroup" class="column-flex equal-width">
+            <mat-form-field>
+                <input matInput [formControl]="formGroup.controls.amount" />
+                <mat-label>Сумма ({{ currency }})</mat-label>
+            </mat-form-field>
+        </form>
+
+        @if (error.length > 0) {
+            <span class="error auto-width">{{ error }}</span>
+        }
+
+        <button
+            mat-button
+            mat-raised-button
+            color="primary"
+            [disabled]="formGroup.invalid"
+            (click)="withdraw()"
+        >
+            Снять
+        </button>
+    }
+</div>

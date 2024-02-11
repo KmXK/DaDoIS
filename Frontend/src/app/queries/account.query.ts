@@ -23,3 +23,13 @@ export const GET_ACCOUNTS = gql`
         }
     }
 `;
+
+export const GET_ACCOUNTS_FILTER = gql`
+    query getAccountsFilter($type: [TypeOfAccount!]!) {
+        bankAccounts(where: { typeOfAccount: { in: $type } }) {
+            id
+            ibanNumber
+            typeOfAccount
+        }
+    }
+`;

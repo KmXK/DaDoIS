@@ -46,6 +46,7 @@ public class AtmService(BankService bankService, AppDbContext db, IMapper mapper
         Amount = card.BankAccount.Amount,
         Card = mapper.Map<CardDto>(card),
         TransitLogs = await db.TransitLogs
+                .AsSplitQuery()
                 .Where(t => t.SourceId == card.BankAccountId || t.TargetId == card.BankAccountId)
                 .OrderBy(t => t.Date)
                 .AsQueryable()
