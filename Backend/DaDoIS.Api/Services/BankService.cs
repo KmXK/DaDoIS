@@ -139,7 +139,7 @@ public class BankService(AppDbContext db)
     {
         var contract = await db.CreditContracts.FindAsync(contractId) ?? throw new NotFoundException("CreditContract");
 
-        if (contract.Credit.IsAnnuity)
+        if (!contract.Credit.IsAnnuity)
         {
             var cash = await db.BankAccounts.FirstAsync(x => x.TypeOfAccount == TypeOfAccount.Cash);
             var main = await db.BankAccounts.FirstAsync(x => x.TypeOfAccount == TypeOfAccount.Main);
