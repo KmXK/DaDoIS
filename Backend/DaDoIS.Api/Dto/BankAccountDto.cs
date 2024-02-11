@@ -14,4 +14,5 @@ public record BankAccountDto
     public DepositContractDto? DepositContract { get; set; }
     public required double Amount { get; set; }
     public required string IBANNumber { get; set; }
+    public List<CardDto>? Cards { get; set; }
 }

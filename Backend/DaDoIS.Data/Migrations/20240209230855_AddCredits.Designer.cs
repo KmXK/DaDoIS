@@ -4,6 +4,7 @@ using DaDoIS.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DaDoIS.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240209230855_AddCredits")]
+    partial class AddCredits
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,41 +64,6 @@ namespace DaDoIS.Data.Migrations
                     b.HasIndex("DepositContractId");
 
                     b.ToTable("BankAccounts");
-                });
-
-            modelBuilder.Entity("DaDoIS.Data.Entities.Card", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<Guid>("BankAccountId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ClientId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Counter")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsBlocked")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("Pin")
-                        .HasColumnType("int");
-
-                    b.Property<Guid?>("Token")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BankAccountId");
-
-                    b.HasIndex("ClientId");
-
-                    b.ToTable("Cards");
                 });
 
             modelBuilder.Entity("DaDoIS.Data.Entities.Citizenship", b =>
@@ -437,10 +405,9 @@ namespace DaDoIS.Data.Migrations
 
             modelBuilder.Entity("DaDoIS.Data.Entities.BankAccount", b =>
                 {
-                    b.HasOne("DaDoIS.Data.Entities.CreditContract", "CreditContract")
+                    b.HasOne("DaDoIS.Data.Entities.CreditContract", null)
                         .WithMany("BankAccounts")
-                        .HasForeignKey("CreditContractId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .HasForeignKey("CreditContractId");
 
                     b.HasOne("DaDoIS.Data.Entities.Currency", "Currency")
                         .WithMany()
@@ -453,30 +420,9 @@ namespace DaDoIS.Data.Migrations
                         .HasForeignKey("DepositContractId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.Navigation("CreditContract");
-
                     b.Navigation("Currency");
 
                     b.Navigation("DepositContract");
-                });
-
-            modelBuilder.Entity("DaDoIS.Data.Entities.Card", b =>
-                {
-                    b.HasOne("DaDoIS.Data.Entities.BankAccount", "BankAccount")
-                        .WithMany("Cards")
-                        .HasForeignKey("BankAccountId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("DaDoIS.Data.Entities.Client", "Client")
-                        .WithMany("Cards")
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("BankAccount");
-
-                    b.Navigation("Client");
                 });
 
             modelBuilder.Entity("DaDoIS.Data.Entities.Client", b =>
@@ -583,15 +529,8 @@ namespace DaDoIS.Data.Migrations
                     b.Navigation("Target");
                 });
 
-            modelBuilder.Entity("DaDoIS.Data.Entities.BankAccount", b =>
-                {
-                    b.Navigation("Cards");
-                });
-
             modelBuilder.Entity("DaDoIS.Data.Entities.Client", b =>
                 {
-                    b.Navigation("Cards");
-
                     b.Navigation("CreditContracts");
 
                     b.Navigation("DepositContracts");

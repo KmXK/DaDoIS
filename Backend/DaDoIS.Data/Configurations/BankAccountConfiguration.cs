@@ -17,5 +17,10 @@ public class BankAccountConfiguration : IEntityTypeConfiguration<BankAccount>
             .HasOne(x => x.DepositContract)
             .WithMany(t => t.BankAccounts)
             .OnDelete(DeleteBehavior.NoAction);
+
+        builder
+            .HasOne(x => x.CreditContract)
+            .WithMany(t => t.BankAccounts)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

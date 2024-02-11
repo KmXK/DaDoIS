@@ -6,15 +6,20 @@ namespace DaDoIS.Data;
 
 public class AppDbContext(DbContextOptions options) : DbContext(options)
 {
-    public DbSet<Client> Clients { get; init; } = null!;
-    public DbSet<City> Cities { get; init; } = null!;
-    public DbSet<Citizenship> Citizenship { get; init; } = null!;
+    public required DbSet<Client> Clients { get; init; }
+    public required DbSet<City> Cities { get; init; }
+    public required DbSet<Citizenship> Citizenship { get; init; }
 
-    public DbSet<Currency> Currencies { get; init; } = null!;
-    public DbSet<Deposit> Deposits { get; init; } = null!;
-    public DbSet<DepositContract> DepositContracts { get; init; } = null!;
-    public DbSet<BankAccount> BankAccounts { get; init; } = null!;
-    public DbSet<TransitLog> TransitLogs { get; init; } = null!;
+    public required DbSet<Currency> Currencies { get; init; }
+    public required DbSet<Deposit> Deposits { get; init; }
+    public required DbSet<DepositContract> DepositContracts { get; init; }
+    public required DbSet<Credit> Credits { get; init; }
+    public required DbSet<CreditContract> CreditContracts { get; init; }
+
+    public required DbSet<BankAccount> BankAccounts { get; init; }
+    public required DbSet<Card> Cards { get; init; }
+
+    public required DbSet<TransitLog> TransitLogs { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

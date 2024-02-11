@@ -14,10 +14,13 @@ public class MapperProfile : Profile
         CreateMap<Citizenship, CitizenshipDto>();
 
         CreateMap<Currency, CurrencyDto>();
-        CreateMap<Deposit, DepositDto>();
         CreateMap<BankAccount, BankAccountDto>();
-        CreateMap<DepositContract, DepositContractDto>();
         CreateMap<TransitLog, TransitLogDto>();
+        CreateMap<Deposit, DepositDto>();
+        CreateMap<DepositContract, DepositContractDto>();
+        CreateMap<Credit, CreditDto>();
+        CreateMap<CreditContract, CreditContractDto>();
+        CreateMap<Card, CardDto>();
 
 
         CreateMap<CreateClientDto, Client>();
@@ -35,10 +38,13 @@ public static class MapperExtensions
         cfg.CreateProjection<City, CityDto>();
         cfg.CreateProjection<Citizenship, CitizenshipDto>();
         cfg.CreateProjection<Currency, CurrencyDto>();
-        cfg.CreateProjection<Deposit, DepositDto>();
         cfg.CreateProjection<BankAccount, BankAccountDto>();
-        cfg.CreateProjection<DepositContract, DepositContractDto>();
         cfg.CreateProjection<TransitLog, TransitLogDto>();
+        cfg.CreateProjection<Deposit, DepositDto>();
+        cfg.CreateProjection<DepositContract, DepositContractDto>();
+        cfg.CreateProjection<Credit, CreditDto>();
+        cfg.CreateProjection<CreditContract, CreditContractDto>();
+        cfg.CreateProjection<Card, CardDto>();
     });
 
     public static IQueryable<T> ProjectTo<T>(this IQueryable data) =>

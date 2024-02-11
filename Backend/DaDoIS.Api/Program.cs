@@ -19,7 +19,8 @@ builder.Services
     .AddAutoMapper(typeof(Program))
     .AddValidatorsFromAssemblyContaining<CreateClientDtoValidator>()
     .AddTransient<DataSeed>()
-    .AddTransient<BankService>();
+    .AddTransient<BankService>()
+    .AddTransient<AtmService>();
 
 builder.Services
     .AddGraphQLServer()

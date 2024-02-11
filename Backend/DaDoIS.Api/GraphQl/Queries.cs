@@ -34,14 +34,20 @@ public class Queries
     [UseProjection]
     [UseFiltering]
     [UseSorting]
-    public IQueryable<DepositDto> Deposits([Service] AppDbContext db) =>
-        db.Deposits.AsQueryable().ProjectTo<DepositDto>();
+    public IQueryable<BankAccountDto> BankAccounts([Service] AppDbContext db) =>
+        db.BankAccounts.AsQueryable().ProjectTo<BankAccountDto>();
 
     [UseProjection]
     [UseFiltering]
     [UseSorting]
-    public IQueryable<BankAccountDto> BankAccounts([Service] AppDbContext db) =>
-        db.BankAccounts.AsQueryable().ProjectTo<BankAccountDto>();
+    public IQueryable<TransitLogDto> TransitLogs([Service] AppDbContext db) =>
+        db.TransitLogs.AsQueryable().ProjectTo<TransitLogDto>();
+
+    [UseProjection]
+    [UseFiltering]
+    [UseSorting]
+    public IQueryable<DepositDto> Deposits([Service] AppDbContext db) =>
+        db.Deposits.AsQueryable().ProjectTo<DepositDto>();
 
     [UseProjection]
     [UseFiltering]
@@ -52,6 +58,18 @@ public class Queries
     [UseProjection]
     [UseFiltering]
     [UseSorting]
-    public IQueryable<TransitLogDto> TransitLogs([Service] AppDbContext db) =>
-        db.TransitLogs.AsQueryable().ProjectTo<TransitLogDto>();
+    public IQueryable<CreditDto> Credits([Service] AppDbContext db) =>
+            db.Credits.AsQueryable().ProjectTo<CreditDto>();
+
+    [UseProjection]
+    [UseFiltering]
+    [UseSorting]
+    public IQueryable<CreditContractDto> CreditContracts([Service] AppDbContext db) =>
+        db.CreditContracts.AsQueryable().ProjectTo<CreditContractDto>();
+
+    [UseProjection]
+    [UseFiltering]
+    [UseSorting]
+    public IQueryable<CardDto> Cards([Service] AppDbContext db) =>
+        db.Cards.AsQueryable().ProjectTo<CardDto>();
 }

@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime;
 
 namespace DaDoIS.Data.Entities;
 
@@ -14,6 +13,9 @@ public class BankAccount
     public required int CurrencyId { get; set; }
     public virtual DepositContract? DepositContract { get; set; }
     public int? DepositContractId { get; set; }
+    public virtual CreditContract? CreditContract { get; set; }
+    public int? CreditContractId { get; set; }
+    public virtual List<Card>? Cards { get; set; }
     [NotMapped]
     public double Amount { get => AccountType == AccountType.Active ? Debit - Credit : Credit - Debit; }
     [NotMapped]
@@ -32,7 +34,9 @@ public class BankAccount
             TypeOfAccount.Main => "7327",
             TypeOfAccount.Cash => "1010",
             TypeOfAccount.Deposit => "3014",
-            TypeOfAccount.Percent => "3014",
+            TypeOfAccount.DepositPercent => "3014",
+            TypeOfAccount.Credit => "2400",
+            TypeOfAccount.CreditPercent => "2400",
             _ => "1111",
         };
     }
