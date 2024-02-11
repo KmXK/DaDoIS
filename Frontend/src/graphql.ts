@@ -52,6 +52,7 @@ export type BankAccount = {
     __typename?: 'BankAccount';
     accountType: AccountType;
     amount: Scalars['Float']['output'];
+    cards?: Maybe<Array<CardDto>>;
     credit: Scalars['Float']['output'];
     currency: Currency;
     debit: Scalars['Float']['output'];
@@ -65,6 +66,7 @@ export type BankAccountFilterInput = {
     accountType?: InputMaybe<AccountTypeOperationFilterInput>;
     amount?: InputMaybe<FloatOperationFilterInput>;
     and?: InputMaybe<Array<BankAccountFilterInput>>;
+    cards?: InputMaybe<ListFilterInputTypeOfCardDtoFilterInput>;
     credit?: InputMaybe<FloatOperationFilterInput>;
     currency?: InputMaybe<CurrencyFilterInput>;
     debit?: InputMaybe<FloatOperationFilterInput>;
@@ -90,6 +92,43 @@ export type BankAccountSortInput = {
 export type BooleanOperationFilterInput = {
     eq?: InputMaybe<Scalars['Boolean']['input']>;
     neq?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type CardDto = {
+    __typename?: 'CardDto';
+    bankAccount: BankAccount;
+    cardNumber: Scalars['String']['output'];
+    client: Client;
+    id: Scalars['Int']['output'];
+    isBlocked: Scalars['Boolean']['output'];
+    pin: Scalars['Int']['output'];
+};
+
+export type CardDtoFilterInput = {
+    and?: InputMaybe<Array<CardDtoFilterInput>>;
+    bankAccount?: InputMaybe<BankAccountFilterInput>;
+    cardNumber?: InputMaybe<StringOperationFilterInput>;
+    client?: InputMaybe<ClientFilterInput>;
+    id?: InputMaybe<IntOperationFilterInput>;
+    isBlocked?: InputMaybe<BooleanOperationFilterInput>;
+    or?: InputMaybe<Array<CardDtoFilterInput>>;
+    pin?: InputMaybe<IntOperationFilterInput>;
+};
+
+export type CardDtoSortInput = {
+    bankAccount?: InputMaybe<BankAccountSortInput>;
+    cardNumber?: InputMaybe<SortEnumType>;
+    client?: InputMaybe<ClientSortInput>;
+    id?: InputMaybe<SortEnumType>;
+    isBlocked?: InputMaybe<SortEnumType>;
+    pin?: InputMaybe<SortEnumType>;
+};
+
+export type CardInfoDto = {
+    __typename?: 'CardInfoDto';
+    amount: Scalars['Float']['output'];
+    card: CardDto;
+    transitLogs?: Maybe<Array<TransitLog>>;
 };
 
 export type Citizenship = {
@@ -132,7 +171,9 @@ export type Client = {
     __typename?: 'Client';
     birthDate: Scalars['DateTime']['output'];
     birthPlace: Scalars['String']['output'];
+    cards?: Maybe<Array<CardDto>>;
     citizenship: Citizenship;
+    creditContracts?: Maybe<Array<CreditContract>>;
     depositContracts?: Maybe<Array<DepositContract>>;
     disabilityGroup: DisabilityGroup;
     email?: Maybe<Scalars['String']['output']>;
@@ -164,7 +205,9 @@ export type ClientFilterInput = {
     and?: InputMaybe<Array<ClientFilterInput>>;
     birthDate?: InputMaybe<DateTimeOperationFilterInput>;
     birthPlace?: InputMaybe<StringOperationFilterInput>;
+    cards?: InputMaybe<ListFilterInputTypeOfCardDtoFilterInput>;
     citizenship?: InputMaybe<CitizenshipFilterInput>;
+    creditContracts?: InputMaybe<ListFilterInputTypeOfCreditContractFilterInput>;
     depositContracts?: InputMaybe<ListFilterInputTypeOfDepositContractFilterInput>;
     disabilityGroup?: InputMaybe<DisabilityGroupOperationFilterInput>;
     email?: InputMaybe<StringOperationFilterInput>;
@@ -252,6 +295,21 @@ export type CreateClientInput = {
     workPlace?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type CreateCreditContractInput = {
+    amount: Scalars['Float']['input'];
+    clientId: Scalars['UUID']['input'];
+    creditId: Scalars['Int']['input'];
+    number: Scalars['String']['input'];
+};
+
+export type CreateCreditInput = {
+    currencyId: Scalars['Int']['input'];
+    interest: Scalars['Float']['input'];
+    isAnnuity: Scalars['Boolean']['input'];
+    name: Scalars['String']['input'];
+    period: Scalars['Int']['input'];
+};
+
 export type CreateDepositContractInput = {
     amount: Scalars['Float']['input'];
     clientId: Scalars['UUID']['input'];
@@ -265,6 +323,77 @@ export type CreateDepositInput = {
     isRevocable: Scalars['Boolean']['input'];
     name: Scalars['String']['input'];
     period: Scalars['Int']['input'];
+};
+
+export type Credit = {
+    __typename?: 'Credit';
+    currency: Currency;
+    id: Scalars['Int']['output'];
+    interest: Scalars['Float']['output'];
+    isAnnuity: Scalars['Boolean']['output'];
+    name: Scalars['String']['output'];
+    period: Scalars['Int']['output'];
+};
+
+export type CreditContract = {
+    __typename?: 'CreditContract';
+    amount: Scalars['Float']['output'];
+    bankAccounts: Array<BankAccount>;
+    client: Client;
+    credit: Credit;
+    dateBegin: Scalars['DateTime']['output'];
+    dateEnd: Scalars['DateTime']['output'];
+    daysToEnd: Scalars['Int']['output'];
+    id: Scalars['Int']['output'];
+    isActive: Scalars['Boolean']['output'];
+    number: Scalars['String']['output'];
+};
+
+export type CreditContractFilterInput = {
+    amount?: InputMaybe<FloatOperationFilterInput>;
+    and?: InputMaybe<Array<CreditContractFilterInput>>;
+    bankAccounts?: InputMaybe<ListFilterInputTypeOfBankAccountFilterInput>;
+    client?: InputMaybe<ClientFilterInput>;
+    credit?: InputMaybe<CreditFilterInput>;
+    dateBegin?: InputMaybe<DateTimeOperationFilterInput>;
+    dateEnd?: InputMaybe<DateTimeOperationFilterInput>;
+    daysToEnd?: InputMaybe<IntOperationFilterInput>;
+    id?: InputMaybe<IntOperationFilterInput>;
+    isActive?: InputMaybe<BooleanOperationFilterInput>;
+    number?: InputMaybe<StringOperationFilterInput>;
+    or?: InputMaybe<Array<CreditContractFilterInput>>;
+};
+
+export type CreditContractSortInput = {
+    amount?: InputMaybe<SortEnumType>;
+    client?: InputMaybe<ClientSortInput>;
+    credit?: InputMaybe<CreditSortInput>;
+    dateBegin?: InputMaybe<SortEnumType>;
+    dateEnd?: InputMaybe<SortEnumType>;
+    daysToEnd?: InputMaybe<SortEnumType>;
+    id?: InputMaybe<SortEnumType>;
+    isActive?: InputMaybe<SortEnumType>;
+    number?: InputMaybe<SortEnumType>;
+};
+
+export type CreditFilterInput = {
+    and?: InputMaybe<Array<CreditFilterInput>>;
+    currency?: InputMaybe<CurrencyFilterInput>;
+    id?: InputMaybe<IntOperationFilterInput>;
+    interest?: InputMaybe<FloatOperationFilterInput>;
+    isAnnuity?: InputMaybe<BooleanOperationFilterInput>;
+    name?: InputMaybe<StringOperationFilterInput>;
+    or?: InputMaybe<Array<CreditFilterInput>>;
+    period?: InputMaybe<IntOperationFilterInput>;
+};
+
+export type CreditSortInput = {
+    currency?: InputMaybe<CurrencySortInput>;
+    id?: InputMaybe<SortEnumType>;
+    interest?: InputMaybe<SortEnumType>;
+    isAnnuity?: InputMaybe<SortEnumType>;
+    name?: InputMaybe<SortEnumType>;
+    period?: InputMaybe<SortEnumType>;
 };
 
 export type Currency = {
@@ -435,6 +564,20 @@ export type ListFilterInputTypeOfBankAccountFilterInput = {
     some?: InputMaybe<BankAccountFilterInput>;
 };
 
+export type ListFilterInputTypeOfCardDtoFilterInput = {
+    all?: InputMaybe<CardDtoFilterInput>;
+    any?: InputMaybe<Scalars['Boolean']['input']>;
+    none?: InputMaybe<CardDtoFilterInput>;
+    some?: InputMaybe<CardDtoFilterInput>;
+};
+
+export type ListFilterInputTypeOfCreditContractFilterInput = {
+    all?: InputMaybe<CreditContractFilterInput>;
+    any?: InputMaybe<Scalars['Boolean']['input']>;
+    none?: InputMaybe<CreditContractFilterInput>;
+    some?: InputMaybe<CreditContractFilterInput>;
+};
+
 export type ListFilterInputTypeOfDepositContractFilterInput = {
     all?: InputMaybe<DepositContractFilterInput>;
     any?: InputMaybe<Scalars['Boolean']['input']>;
@@ -458,14 +601,27 @@ export type MaritalStatusOperationFilterInput = {
 
 export type Mutations = {
     __typename?: 'Mutations';
+    cardInfo: CardInfoDto;
     closeBankDay: Scalars['Boolean']['output'];
     closeDepositContract: Scalars['Boolean']['output'];
     createClient: Client;
+    createCredit: Credit;
+    createCreditContract: CreditContract;
     createDeposit: Deposit;
     createDepositContract: DepositContract;
     deleteClient: Scalars['Boolean']['output'];
+    deleteCredit: Scalars['Boolean']['output'];
     deleteDeposit: Scalars['Boolean']['output'];
+    getCard: Scalars['Boolean']['output'];
+    insertCard: Scalars['UUID']['output'];
+    openCard: CardDto;
     putClient?: Maybe<Client>;
+    puttingMoneyOnPhone: CardInfoDto;
+    withdrawMoney: CardInfoDto;
+};
+
+export type MutationsCardInfoArgs = {
+    token: Scalars['UUID']['input'];
 };
 
 export type MutationsCloseBankDayArgs = {
@@ -480,6 +636,14 @@ export type MutationsCreateClientArgs = {
     client: CreateClientInput;
 };
 
+export type MutationsCreateCreditArgs = {
+    credit: CreateCreditInput;
+};
+
+export type MutationsCreateCreditContractArgs = {
+    creditContract: CreateCreditContractInput;
+};
+
 export type MutationsCreateDepositArgs = {
     deposit: CreateDepositInput;
 };
@@ -492,20 +656,51 @@ export type MutationsDeleteClientArgs = {
     id: Scalars['UUID']['input'];
 };
 
+export type MutationsDeleteCreditArgs = {
+    id: Scalars['Int']['input'];
+};
+
 export type MutationsDeleteDepositArgs = {
     id: Scalars['Int']['input'];
+};
+
+export type MutationsGetCardArgs = {
+    token: Scalars['UUID']['input'];
+};
+
+export type MutationsInsertCardArgs = {
+    cardNumber: Scalars['String']['input'];
+    pin: Scalars['Int']['input'];
+};
+
+export type MutationsOpenCardArgs = {
+    bankAccountId: Scalars['UUID']['input'];
 };
 
 export type MutationsPutClientArgs = {
     client: UpdateClientInput;
 };
 
+export type MutationsPuttingMoneyOnPhoneArgs = {
+    accountId: Scalars['UUID']['input'];
+    amount: Scalars['Float']['input'];
+    token: Scalars['UUID']['input'];
+};
+
+export type MutationsWithdrawMoneyArgs = {
+    amount: Scalars['Float']['input'];
+    token: Scalars['UUID']['input'];
+};
+
 export type Queries = {
     __typename?: 'Queries';
     bankAccounts: Array<BankAccount>;
+    cards: Array<CardDto>;
     cities: Array<City>;
     citizenship: Array<Citizenship>;
     clients: Array<Client>;
+    creditContracts: Array<CreditContract>;
+    credits: Array<Credit>;
     currencies: Array<Currency>;
     depositContracts: Array<DepositContract>;
     deposits: Array<Deposit>;
@@ -515,6 +710,11 @@ export type Queries = {
 export type QueriesBankAccountsArgs = {
     order?: InputMaybe<Array<BankAccountSortInput>>;
     where?: InputMaybe<BankAccountFilterInput>;
+};
+
+export type QueriesCardsArgs = {
+    order?: InputMaybe<Array<CardDtoSortInput>>;
+    where?: InputMaybe<CardDtoFilterInput>;
 };
 
 export type QueriesCitiesArgs = {
@@ -530,6 +730,16 @@ export type QueriesCitizenshipArgs = {
 export type QueriesClientsArgs = {
     order?: InputMaybe<Array<ClientSortInput>>;
     where?: InputMaybe<ClientFilterInput>;
+};
+
+export type QueriesCreditContractsArgs = {
+    order?: InputMaybe<Array<CreditContractSortInput>>;
+    where?: InputMaybe<CreditContractFilterInput>;
+};
+
+export type QueriesCreditsArgs = {
+    order?: InputMaybe<Array<CreditSortInput>>;
+    where?: InputMaybe<CreditFilterInput>;
 };
 
 export type QueriesCurrenciesArgs = {
@@ -600,10 +810,14 @@ export type TransitLogSortInput = {
 };
 
 export enum TypeOfAccount {
+    A1 = 'A1',
     Cash = 'CASH',
+    Credit = 'CREDIT',
+    CreditPercent = 'CREDIT_PERCENT',
     Deposit = 'DEPOSIT',
+    DepositPercent = 'DEPOSIT_PERCENT',
     Main = 'MAIN',
-    Percent = 'PERCENT'
+    Mts = 'MTS'
 }
 
 export type TypeOfAccountOperationFilterInput = {
