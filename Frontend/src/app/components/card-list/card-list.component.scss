@@ -12,15 +12,16 @@
     border-radius: 8px;
     overflow: hidden !important;
   }
-  .main-account {
-    background-color: #00e000;
-  }
 
-  .cash-account {
-    background-color: pink;
-  }
+  .mat-mdc-row {
+    transition: background-color .3s;
 
-  .mobile-account {
-    background-color: #dedede;
+    &:hover {
+      background-color: aliceblue;
+      cursor: pointer;
+      /*transform: translate(10px, 10px);*/
+
+      transition: background-color .3s;
+    }
   }
 }

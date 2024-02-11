@@ -54,6 +54,7 @@ export type BankAccount = {
     amount: Scalars['Float']['output'];
     cards?: Maybe<Array<CardDto>>;
     credit: Scalars['Float']['output'];
+    creditContract?: Maybe<CreditContract>;
     currency: Currency;
     debit: Scalars['Float']['output'];
     depositContract?: Maybe<DepositContract>;
@@ -68,6 +69,7 @@ export type BankAccountFilterInput = {
     and?: InputMaybe<Array<BankAccountFilterInput>>;
     cards?: InputMaybe<ListFilterInputTypeOfCardDtoFilterInput>;
     credit?: InputMaybe<FloatOperationFilterInput>;
+    creditContract?: InputMaybe<CreditContractFilterInput>;
     currency?: InputMaybe<CurrencyFilterInput>;
     debit?: InputMaybe<FloatOperationFilterInput>;
     depositContract?: InputMaybe<DepositContractFilterInput>;
@@ -81,6 +83,7 @@ export type BankAccountSortInput = {
     accountType?: InputMaybe<SortEnumType>;
     amount?: InputMaybe<SortEnumType>;
     credit?: InputMaybe<SortEnumType>;
+    creditContract?: InputMaybe<CreditContractSortInput>;
     currency?: InputMaybe<CurrencySortInput>;
     debit?: InputMaybe<SortEnumType>;
     depositContract?: InputMaybe<DepositContractSortInput>;
@@ -899,6 +902,43 @@ export type GetAccountsQuery = {
             __typename?: 'DepositContract';
             number: string;
         } | null;
+        creditContract?: {
+            __typename?: 'CreditContract';
+            number: string;
+        } | null;
+    }>;
+};
+
+export type OpenCardMutationVariables = Exact<{
+    bankAccountId: Scalars['UUID']['input'];
+}>;
+
+export type OpenCardMutation = {
+    __typename?: 'Mutations';
+    openCard: {
+        __typename?: 'CardDto';
+        id: number;
+        cardNumber: string;
+        pin: number;
+    };
+};
+
+export type GetCardsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetCardsQuery = {
+    __typename?: 'Queries';
+    cards: Array<{
+        __typename?: 'CardDto';
+        id: number;
+        cardNumber: string;
+        pin: number;
+        bankAccount: { __typename?: 'BankAccount'; ibanNumber: string };
+        client: {
+            __typename?: 'Client';
+            firstName: string;
+            lastName: string;
+            patronymic: string;
+        };
     }>;
 };
 
@@ -1178,6 +1218,9 @@ export const GetAccountsDocument = gql`
             depositContract {
                 number
             }
+            creditContract {
+                number
+            }
         }
     }
 `;
@@ -1190,6 +1233,60 @@ export class GetAccountsGQL extends Apollo.Query<
     GetAccountsQueryVariables
 > {
     override document = GetAccountsDocument;
+
+    constructor(apollo: Apollo.Apollo) {
+        super(apollo);
+    }
+}
+export const OpenCardDocument = gql`
+    mutation openCard($bankAccountId: UUID!) {
+        openCard(bankAccountId: $bankAccountId) {
+            id
+            cardNumber
+            pin
+        }
+    }
+`;
+
+@Injectable({
+    providedIn: 'root'
+})
+export class OpenCardGQL extends Apollo.Mutation<
+    OpenCardMutation,
+    OpenCardMutationVariables
+> {
+    override document = OpenCardDocument;
+
+    constructor(apollo: Apollo.Apollo) {
+        super(apollo);
+    }
+}
+export const GetCardsDocument = gql`
+    query getCards {
+        cards {
+            id
+            cardNumber
+            bankAccount {
+                ibanNumber
+            }
+            pin
+            client {
+                firstName
+                lastName
+                patronymic
+            }
+        }
+    }
+`;
+
+@Injectable({
+    providedIn: 'root'
+})
+export class GetCardsGQL extends Apollo.Query<
+    GetCardsQuery,
+    GetCardsQueryVariables
+> {
+    override document = GetCardsDocument;
 
     constructor(apollo: Apollo.Apollo) {
         super(apollo);

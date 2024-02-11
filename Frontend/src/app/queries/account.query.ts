@@ -17,6 +17,9 @@ export const GET_ACCOUNTS = gql`
             depositContract {
                 number
             }
+            creditContract {
+                number
+            }
         }
     }
 `;

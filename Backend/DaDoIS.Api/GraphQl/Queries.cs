@@ -2,6 +2,7 @@ using AutoMapper.QueryableExtensions;
 using DaDoIS.Api.Configuration;
 using DaDoIS.Api.Dto;
 using DaDoIS.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace DaDoIS.Api.Queries;
 
@@ -41,7 +42,7 @@ public class Queries
     [UseFiltering]
     [UseSorting]
     public IQueryable<TransitLogDto> TransitLogs([Service] AppDbContext db) =>
-        db.TransitLogs.AsQueryable().ProjectTo<TransitLogDto>();
+        db.TransitLogs.AsSplitQuery().AsQueryable().ProjectTo<TransitLogDto>();
 
     [UseProjection]
     [UseFiltering]

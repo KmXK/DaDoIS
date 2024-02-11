@@ -49,6 +49,25 @@
             <td *matCellDef="let element" mat-cell>
                 @if (element.depositContract) {
                     {{ element.depositContract.number }}
+                } @else if (element.creditContract) {
+                    {{ element.creditContract.number }}
+                } @else if (isMobileOperator(element)) {
+                    {{ element.typeOfAccount }}
+                }
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+            <th *matHeaderCellDef></th>
+            <td *matCellDef="let element" mat-cell>
+                @if (element.typeOfAccount === TypeOfAccount.Credit) {
+                    <button
+                        mat-button
+                        mat-raised-button
+                        (click)="createCard(element.id)"
+                    >
+                        Создать карту
+                    </button>
                 }
             </td>
         </ng-container>
@@ -57,8 +76,9 @@
         <tr
             mat-row
             *matRowDef="let element; columns: displayedColumns"
-            [class.main-account]="element.typeOfAccount === 'MAIN'"
-            [class.cash-account]="element.typeOfAccount === 'CASH'"
+            [class.main-account]="element.typeOfAccount === TypeOfAccount.Main"
+            [class.cash-account]="element.typeOfAccount === TypeOfAccount.Cash"
+            [class.mobile-account]="isMobileOperator(element)"
         ></tr>
     </table>
 </div>

@@ -1,0 +1,38 @@
+<div class="container">
+    <div class="container-head">
+        <h2>Карты</h2>
+    </div>
+
+    <table [dataSource]="deposits.get()" mat-table matSort>
+        <ng-container matColumnDef="cardNumber">
+            <th *matHeaderCellDef mat-header-cell mat-sort-header>Номер</th>
+            <td *matCellDef="let element" mat-cell>{{ element.cardNumber }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="iban">
+            <th *matHeaderCellDef mat-header-cell mat-sort-header>
+                IBAN счёта
+            </th>
+            <td *matCellDef="let element" mat-cell>
+                {{ element.bankAccount.ibanNumber }}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="client">
+            <th *matHeaderCellDef mat-header-cell mat-sort-header>Клиент</th>
+            <td *matCellDef="let element" mat-cell>
+                {{ getClientFullName(element.client) }}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="pin">
+            <th *matHeaderCellDef mat-header-cell mat-sort-header>PIN</th>
+            <td *matCellDef="let element" mat-cell>
+                {{ element.amount }} {{ element.pin }}
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let client; columns: displayedColumns"></tr>
+    </table>
+</div>

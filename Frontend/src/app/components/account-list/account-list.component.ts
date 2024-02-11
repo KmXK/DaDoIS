@@ -3,9 +3,11 @@ import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { map } from 'rxjs';
-import { AccountType } from '../../../graphql';
+import { AccountType, TypeOfAccount } from '../../../graphql';
 import { AccountService } from '../../services/account.service';
+import { CardService } from '../../services/card.service';
 
 @Component({
     selector: 'app-deposit-plan-list',
@@ -16,6 +18,8 @@ import { AccountService } from '../../services/account.service';
 })
 export class AccountListComponent {
     private readonly accountService = inject(AccountService);
+    private readonly cardService = inject(CardService);
+    private readonly router = inject(Router);
 
     public readonly displayedColumns = [
         'iban',
@@ -23,7 +27,8 @@ export class AccountListComponent {
         'debit',
         'credit',
         'amount',
-        'contractNumber'
+        'contractNumber',
+        'actions'
     ];
 
     public readonly deposits = this.accountService.getAccounts().pipe(
@@ -43,4 +48,22 @@ export class AccountListComponent {
         })
     );
     protected readonly AccountType = AccountType;
+    protected readonly TypeOfAccount = TypeOfAccount;
+
+    public createCard(id: string): void {
+        this.cardService.createCard(id).subscribe(cardId => {
+            if (cardId) {
+                this.cardService.updateCards();
+                this.router.navigateByUrl('cards').then(() => {});
+            }
+        });
+    }
+
+    public isMobileOperator(element: {
+        typeOfAccount: TypeOfAccount;
+    }): boolean {
+        return [TypeOfAccount.A1, TypeOfAccount.Mts].includes(
+            element.typeOfAccount
+        );
+    }
 }

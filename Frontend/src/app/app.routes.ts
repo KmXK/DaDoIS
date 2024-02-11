@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { AccountListComponent } from './components/account-list/account-list.component';
+import { CardListComponent } from './components/card-list/card-list.component';
 import { ClientListComponent } from './components/client-list/client-list.component';
 import { CreditListComponent } from './components/credit-list/credit-list.component';
 import { CreditPlanListComponent } from './components/credit-plan-list/credit-plan-list.component';
@@ -40,6 +41,10 @@ export const routes: Routes = [
     {
         path: 'credits',
         component: CreditListComponent
+    },
+    {
+        path: 'cards',
+        component: CardListComponent
     },
     {
         path: '*',
