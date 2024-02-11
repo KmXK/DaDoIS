@@ -1,0 +1,47 @@
+<div class="container">
+    <div class="container-head">
+        <h2>Активные депозиты</h2>
+
+        <button mat-button mat-raised-button (click)="createCredit()">
+            Добавить
+        </button>
+    </div>
+
+    <table
+        [dataSource]="deposits.get()"
+        mat-table
+        matSort
+        (matSortChange)="deposits.sort($event)"
+    >
+        <ng-container matColumnDef="number">
+            <th *matHeaderCellDef mat-header-cell mat-sort-header>Номер</th>
+            <td *matCellDef="let element" mat-cell>{{ element.number }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="fullName">
+            <th *matHeaderCellDef mat-header-cell mat-sort-header>
+                ФИО Клиента
+            </th>
+            <td *matCellDef="let element" mat-cell>
+                {{ getClientFullName(element.client) }}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="plan">
+            <th *matHeaderCellDef mat-header-cell mat-sort-header>План</th>
+            <td *matCellDef="let element" mat-cell>
+                {{ element.credit.name }}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="amount">
+            <th *matHeaderCellDef mat-header-cell mat-sort-header>Сумма</th>
+            <td *matCellDef="let element" mat-cell>
+                {{ element.amount }} {{ element.credit.currency.name }}
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let client; columns: displayedColumns"></tr>
+    </table>
+</div>

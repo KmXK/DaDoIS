@@ -29,7 +29,7 @@ export class CreditService {
             );
     }
 
-    public createDeposit(credit: CreateCreditContractInput) {
+    public createCredit(credit: CreateCreditContractInput) {
         return this._createCreditGQL.mutate({ credit }).pipe(
             mapMutationResult(data => data?.createCreditContract.id),
             tap(() => this.updateActiveCredits())
