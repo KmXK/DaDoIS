@@ -974,6 +974,67 @@ export type PutClientMutation = {
     putClient?: { __typename?: 'Client'; id: any } | null;
 };
 
+export type GetCreditPlansQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetCreditPlansQuery = {
+    __typename?: 'Queries';
+    credits: Array<{
+        __typename?: 'Credit';
+        id: number;
+        name: string;
+        interest: number;
+        isAnnuity: boolean;
+        period: number;
+        currency: { __typename?: 'Currency'; id: number; name: string };
+    }>;
+};
+
+export type CreateCreditPlanMutationVariables = Exact<{
+    credit: CreateCreditInput;
+}>;
+
+export type CreateCreditPlanMutation = {
+    __typename?: 'Mutations';
+    createCredit: { __typename?: 'Credit'; id: number };
+};
+
+export type GetActiveCreditsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetActiveCreditsQuery = {
+    __typename?: 'Queries';
+    creditContracts: Array<{
+        __typename?: 'CreditContract';
+        id: number;
+        amount: number;
+        number: string;
+        credit: {
+            __typename?: 'Credit';
+            id: number;
+            name: string;
+            isAnnuity: boolean;
+            period: number;
+            interest: number;
+            currency: { __typename?: 'Currency'; id: number; name: string };
+        };
+        client: {
+            __typename?: 'Client';
+            id: any;
+            firstName: string;
+            lastName: string;
+            patronymic: string;
+        };
+    }>;
+};
+
+export type CreateCreditMutationVariables = Exact<{
+    credit: CreateCreditContractInput;
+}>;
+
+export type CreateCreditMutation = {
+    __typename?: 'Mutations';
+    createCreditContract: { __typename?: 'CreditContract'; id: number };
+};
+
 export type GetCurrenciesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetCurrenciesQuery = {
@@ -1271,6 +1332,117 @@ export class PutClientGQL extends Apollo.Mutation<
     PutClientMutationVariables
 > {
     override document = PutClientDocument;
+
+    constructor(apollo: Apollo.Apollo) {
+        super(apollo);
+    }
+}
+export const GetCreditPlansDocument = gql`
+    query getCreditPlans {
+        credits {
+            id
+            name
+            currency {
+                id
+                name
+            }
+            interest
+            isAnnuity
+            period
+        }
+    }
+`;
+
+@Injectable({
+    providedIn: 'root'
+})
+export class GetCreditPlansGQL extends Apollo.Query<
+    GetCreditPlansQuery,
+    GetCreditPlansQueryVariables
+> {
+    override document = GetCreditPlansDocument;
+
+    constructor(apollo: Apollo.Apollo) {
+        super(apollo);
+    }
+}
+export const CreateCreditPlanDocument = gql`
+    mutation createCreditPlan($credit: CreateCreditInput!) {
+        createCredit(credit: $credit) {
+            id
+        }
+    }
+`;
+
+@Injectable({
+    providedIn: 'root'
+})
+export class CreateCreditPlanGQL extends Apollo.Mutation<
+    CreateCreditPlanMutation,
+    CreateCreditPlanMutationVariables
+> {
+    override document = CreateCreditPlanDocument;
+
+    constructor(apollo: Apollo.Apollo) {
+        super(apollo);
+    }
+}
+export const GetActiveCreditsDocument = gql`
+    query getActiveCredits {
+        creditContracts(where: { isActive: { eq: true } }) {
+            id
+            credit {
+                id
+                name
+                currency {
+                    id
+                    name
+                }
+                isAnnuity
+                period
+                interest
+            }
+            amount
+            number
+            client {
+                id
+                firstName
+                lastName
+                patronymic
+            }
+        }
+    }
+`;
+
+@Injectable({
+    providedIn: 'root'
+})
+export class GetActiveCreditsGQL extends Apollo.Query<
+    GetActiveCreditsQuery,
+    GetActiveCreditsQueryVariables
+> {
+    override document = GetActiveCreditsDocument;
+
+    constructor(apollo: Apollo.Apollo) {
+        super(apollo);
+    }
+}
+export const CreateCreditDocument = gql`
+    mutation createCredit($credit: CreateCreditContractInput!) {
+        createCreditContract(creditContract: $credit) {
+            id
+        }
+    }
+`;
+
+@Injectable({
+    providedIn: 'root'
+})
+export class CreateCreditGQL extends Apollo.Mutation<
+    CreateCreditMutation,
+    CreateCreditMutationVariables
+> {
+    override document = CreateCreditDocument;
 
     constructor(apollo: Apollo.Apollo) {
         super(apollo);

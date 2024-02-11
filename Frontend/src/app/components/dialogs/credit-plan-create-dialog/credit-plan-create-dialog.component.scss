@@ -1,0 +1,19 @@
+.buttons-container {
+    justify-content: end;
+}
+
+form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    // add space between columns
+    column-gap: 10px;
+
+    input.currency {
+        text-align: right;
+
+        ::-webkit-outer-spin-button,
+        ::-webkit-inner-spin-button {
+            display: none;
+        }
+    }
+}

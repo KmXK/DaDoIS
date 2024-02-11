@@ -27,6 +27,8 @@ public class MapperProfile : Profile
         CreateMap<UpdateClientDto, Client>();
         CreateMap<CreateDepositDto, Deposit>();
         CreateMap<CreateDepositContractDto, DepositContract>();
+        CreateMap<CreateCreditDto, Credit>();
+        CreateMap<CreateCreditContractDto, CreditContract>();
     }
 }
 

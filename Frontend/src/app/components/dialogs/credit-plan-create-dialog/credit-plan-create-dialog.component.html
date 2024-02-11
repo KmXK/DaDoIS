@@ -1,0 +1,38 @@
+<h1 mat-dialog-title>Новый кредитный план</h1>
+<div mat-dialog-content>
+    <form [formGroup]="form">
+        <mat-form-field>
+            <mat-label>Название</mat-label>
+            <input matInput formControlName="name" />
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Срок (в днях)</mat-label>
+            <input matInput type="number" formControlName="period" />
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Процентная ставка</mat-label>
+            <input matInput type="number" formControlName="interest" />
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Валюта</mat-label>
+            <mat-select formControlName="currencyId">
+                @for (currency of currencies(); track currency.id) {
+                    <mat-option [value]="currency.id">
+                        {{ currency.name }}
+                    </mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+        <mat-checkbox formControlName="isAnnuity"> Аннуитетный </mat-checkbox>
+    </form>
+</div>
+<div mat-dialog-actions class="buttons-container">
+    <button mat-button (click)="close()">Отмена</button>
+    <button
+        mat-button
+        [disabled]="form.invalid || inProcess()"
+        (click)="create()"
+    >
+        Создать
+    </button>
+</div>

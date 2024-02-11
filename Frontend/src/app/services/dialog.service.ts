@@ -1,3 +1,4 @@
+import { ComponentType } from '@angular/cdk/overlay';
 import { inject, Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
@@ -37,5 +38,9 @@ export class DialogService {
     public openCreateDepositDialog(): Observable<void> {
         const dialog = this.matDialog.open(DepositCreateDialog);
         return dialog.afterOpened();
+    }
+
+    public open(dialog: ComponentType<any>): Observable<void> {
+        return this.matDialog.open(dialog).afterClosed();
     }
 }
