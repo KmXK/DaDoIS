@@ -1,10 +1,11 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { map } from 'rxjs';
-import { AccountType } from '../../../graphql';
+import { AccountType, TypeOfAccount } from '../../../graphql';
 import { TransactionService } from '../../services/transaction.service';
 
 @Component({
@@ -15,7 +16,8 @@ import { TransactionService } from '../../services/transaction.service';
         MatSortModule,
         MatButtonModule,
         DecimalPipe,
-        DatePipe
+        DatePipe,
+        MatIcon
     ],
     templateUrl: './transaction-list.component.html',
     styleUrl: './transaction-list.component.scss'
@@ -23,7 +25,13 @@ import { TransactionService } from '../../services/transaction.service';
 export class TransactionListComponent {
     private readonly transactionService = inject(TransactionService);
 
-    public readonly displayedColumns = ['source', 'target', 'amount', 'date'];
+    public readonly displayedColumns = [
+        'source',
+        'arrow',
+        'target',
+        'amount',
+        'date'
+    ];
 
     public readonly transactions = this.transactionService
         .getTransactions()
@@ -35,5 +43,22 @@ export class TransactionListComponent {
             )
         );
 
+    public getClientFullName(client: {
+        patronymic: string;
+        firstName: string;
+        lastName: string;
+    }): string {
+        return `${client.firstName} ${client.lastName} ${client.patronymic}`;
+    }
+
+    public isMobileOperator(element: {
+        typeOfAccount: TypeOfAccount;
+    }): boolean {
+        return [TypeOfAccount.A1, TypeOfAccount.Mts].includes(
+            element.typeOfAccount
+        );
+    }
+
     protected readonly AccountType = AccountType;
+    protected readonly TypeOfAccount = TypeOfAccount;
 }

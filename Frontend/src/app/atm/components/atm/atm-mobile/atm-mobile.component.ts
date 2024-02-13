@@ -55,7 +55,7 @@ export class AtmMobileComponent implements OnInit {
         ),
         amount: new FormControl<number>(undefined!, [
             Validators.required,
-            Validators.min(1)
+            Validators.pattern(/^[0-9]+(\.[0-9]{1,2})?$/)
         ])
     });
 
@@ -88,6 +88,8 @@ export class AtmMobileComponent implements OnInit {
 
                 this.loading.update(l => l - 1);
             });
+
+        this.formGroup.valueChanges.subscribe(() => (this.error = ''));
     }
 
     exit() {
@@ -106,7 +108,9 @@ export class AtmMobileComponent implements OnInit {
         };
 
         this.service.transferMobile(value).subscribe({
-            error: error => (this.error = error.errorMessage),
+            error: error => {
+                this.error = error.errorMessage;
+            },
             next: () =>
                 this.dialogService.open(TextDialog, {
                     text: `Указанный номер мобильного телефона был пополнен на ${value.amount} ${this.currency}.`,

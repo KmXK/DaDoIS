@@ -27,9 +27,22 @@
             </mat-form-field>
         </form>
 
-        <button mat-button mat-raised-button color="primary" (click)="action()">
+        @if (error) {
+            <div class="center auto-width">
+                <span class="error">{{ error }}</span>
+            </div>
+        }
+
+        <button
+            mat-button
+            mat-raised-button
+            color="primary"
+            [disabled]="formGroup.invalid || error !== ''"
+            (click)="action()"
+        >
             Пополнить
         </button>
+
         <button mat-button mat-raised-button color="warn" (click)="exit()">
             Вернуться
         </button>

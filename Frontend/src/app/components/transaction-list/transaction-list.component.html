@@ -8,11 +8,46 @@
             <th *matHeaderCellDef mat-header-cell>Отправитель</th>
             <td *matCellDef="let element" mat-cell>
                 @if (element.source) {
-                    {{ element.source.typeOfAccount }}
-                    {{ element.source.ibanNumber }}
+                    <div
+                        [class.main-account]="
+                            element.source.typeOfAccount === TypeOfAccount.Main
+                        "
+                        [class.cash-account]="
+                            element.source.typeOfAccount === TypeOfAccount.Cash
+                        "
+                        [class.mobile-account]="
+                            isMobileOperator(element.source)
+                        "
+                    >
+                        {{ element.source.typeOfAccount }}
+                        {{ element.source.ibanNumber }}
+                        <br />
+                        @if (
+                            element.source.depositContract ||
+                            element.source.creditContract
+                        ) {
+                            {{
+                                getClientFullName(
+                                    (
+                                        element.source.depositContract ||
+                                        element.source.creditContract
+                                    ).client
+                                )
+                            }}
+                        }
+                    </div>
                 } @else {
                     НАЛИЧНЫЕ
                 }
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="arrow">
+            <th *matHeaderCellDef mat-header-cell></th>
+            <td *matCellDef="let element" mat-cell>
+                <mat-icon aria-hidden="false" aria-label="Example home icon">
+                    double_arrow
+                </mat-icon>
             </td>
         </ng-container>
 
@@ -20,8 +55,34 @@
             <th *matHeaderCellDef mat-header-cell>Получатель</th>
             <td *matCellDef="let element" mat-cell>
                 @if (element.target) {
-                    {{ element.target.typeOfAccount }}
-                    {{ element.target.ibanNumber }}
+                    <div
+                        [class.main-account]="
+                            element.target.typeOfAccount === TypeOfAccount.Main
+                        "
+                        [class.cash-account]="
+                            element.target.typeOfAccount === TypeOfAccount.Cash
+                        "
+                        [class.mobile-account]="
+                            isMobileOperator(element.target)
+                        "
+                    >
+                        {{ element.target.typeOfAccount }}
+                        {{ element.target.ibanNumber }}
+                        <br />
+                        @if (
+                            element.target.depositContract ||
+                            element.target.creditContract
+                        ) {
+                            {{
+                                getClientFullName(
+                                    (
+                                        element.target.depositContract ||
+                                        element.target.creditContract
+                                    ).client
+                                )
+                            }}
+                        }
+                    </div>
                 } @else {
                     НАЛИЧНЫЕ
                 }

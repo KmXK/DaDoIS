@@ -12,4 +12,25 @@
     border-radius: 8px;
     overflow: hidden !important;
   }
+
+  td {
+    .main-account,
+    .cash-account,
+    .mobile-account {
+      border-radius: 10px;
+      padding: 5px;
+    }
+
+    .main-account {
+      background-color: #00e000;
+    }
+
+    .cash-account {
+      background-color: pink;
+    }
+
+    .mobile-account {
+      background-color: #dedede;
+    }
+  }
 }

@@ -1252,11 +1252,47 @@ export type GetTransactionsQuery = {
             __typename?: 'BankAccount';
             typeOfAccount: TypeOfAccount;
             ibanNumber: string;
+            depositContract?: {
+                __typename?: 'DepositContract';
+                client: {
+                    __typename?: 'Client';
+                    firstName: string;
+                    lastName: string;
+                    patronymic: string;
+                };
+            } | null;
+            creditContract?: {
+                __typename?: 'CreditContract';
+                client: {
+                    __typename?: 'Client';
+                    firstName: string;
+                    lastName: string;
+                    patronymic: string;
+                };
+            } | null;
         } | null;
         target?: {
             __typename?: 'BankAccount';
             typeOfAccount: TypeOfAccount;
             ibanNumber: string;
+            depositContract?: {
+                __typename?: 'DepositContract';
+                client: {
+                    __typename?: 'Client';
+                    firstName: string;
+                    lastName: string;
+                    patronymic: string;
+                };
+            } | null;
+            creditContract?: {
+                __typename?: 'CreditContract';
+                client: {
+                    __typename?: 'Client';
+                    firstName: string;
+                    lastName: string;
+                    patronymic: string;
+                };
+            } | null;
         } | null;
     }>;
 };
@@ -1950,10 +1986,38 @@ export const GetTransactionsDocument = gql`
             source {
                 typeOfAccount
                 ibanNumber
+                depositContract {
+                    client {
+                        firstName
+                        lastName
+                        patronymic
+                    }
+                }
+                creditContract {
+                    client {
+                        firstName
+                        lastName
+                        patronymic
+                    }
+                }
             }
             target {
                 typeOfAccount
                 ibanNumber
+                depositContract {
+                    client {
+                        firstName
+                        lastName
+                        patronymic
+                    }
+                }
+                creditContract {
+                    client {
+                        firstName
+                        lastName
+                        patronymic
+                    }
+                }
             }
         }
     }

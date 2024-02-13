@@ -9,10 +9,38 @@ export const GET_TRANSACTIONS = gql`
             source {
                 typeOfAccount
                 ibanNumber
+                depositContract {
+                    client {
+                        firstName
+                        lastName
+                        patronymic
+                    }
+                }
+                creditContract {
+                    client {
+                        firstName
+                        lastName
+                        patronymic
+                    }
+                }
             }
             target {
                 typeOfAccount
                 ibanNumber
+                depositContract {
+                    client {
+                        firstName
+                        lastName
+                        patronymic
+                    }
+                }
+                creditContract {
+                    client {
+                        firstName
+                        lastName
+                        patronymic
+                    }
+                }
             }
         }
     }
