@@ -1,17 +1,17 @@
 services:
-  front:
-    container_name: front
-    build: ./Frontend/
-    ports:
-      - "5003:4200"
-    volumes:
-      - ./Frontend:/app
-      - /app/node_modules
-    networks:
-      - frontend
-    depends_on:
-      api:
-        condition: service_started
+  # front:
+  #   container_name: front
+  #   build: ./Frontend/
+  #   ports:
+  #     - "5003:4200"
+  #   volumes:
+  #     - ./Frontend:/app
+  #     - /app/node_modules
+  #   networks:
+  #     - frontend
+  #   depends_on:
+  #     api:
+  #       condition: service_started
 
   api:
     container_name: api

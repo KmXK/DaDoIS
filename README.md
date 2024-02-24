@@ -1,4 +1,12 @@
-Для того что бы заработало:
+Для запуска:
 
--   создай файл db_password.txt в корне прокта
--   пропиши там пароль к базе
+1. Клонируйте ветку front
+   git clone https://github.com/KmXK/DaDoIS.git -b front
+
+2. Запускаете через докер базу и бэк
+   docker-compose up --build
+
+3. Запустить фронт отдельно
+   cd .\Frontend\  
+   npm install
+   npm run start
